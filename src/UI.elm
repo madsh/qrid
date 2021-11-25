@@ -27,7 +27,7 @@ h1 label =
 
 header : String -> String -> Html msg
 header portalName solutionName =
-    Html.header []             
+    Html.header [Attr.class "header"]             
         [ headerPortal portalName
         , headerSolution solutionName
         , headerNavigation "navparam" 
