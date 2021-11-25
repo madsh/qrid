@@ -1,2 +1,2 @@
 # qrid
-dont loose
+losts, founds and more
