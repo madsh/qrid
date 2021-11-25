@@ -105,7 +105,7 @@ viewForm model =
                  , Events.onInput UpdatedName
                  ][]
     , Html.button [ Attr.class "button button-primary mt-6", Attr.disabled (String.isEmpty model.name)][ Html.text "Login"]
-    , Html.a [ Attr.href "signup.html"][ Html.text "or sign up"]            {- replace with route -}
+    , Html.a [ Attr.href "signup.html", Attr.class "ml-3"][ Html.text "or sign up"]            {- replace with route -}
     ]
     ]
 

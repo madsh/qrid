@@ -18,9 +18,13 @@ type alias Flags =
 
 
 type alias Model =
-    { storage : Storage
+    { storage : Storage    
     }
 
+type alias Banner = {
+    type_ : String
+    , content : String
+}
 
 init : Request -> Flags -> ( Model, Cmd Msg )
 init req flags =
@@ -31,9 +35,8 @@ init req flags =
     ( model
     , if model.storage.user /= Nothing && req.route == Gen.Route.SignIn then
         Request.replaceRoute Gen.Route.SignIn req
-
       else
-        Cmd.none
+        Cmd.none    
     )
 
 
