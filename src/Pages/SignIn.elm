@@ -8,7 +8,6 @@ import Page
 import Request
 import Shared
 import Storage exposing (Storage)
-import UI
 import View exposing (View)
 
 
@@ -78,7 +77,7 @@ view model =
     { title = "Sign in"
     , body = 
         [ Html.header [][]
-        , Html.main_ [ Attr.class "container page-container", Attr.id "main-contente"]
+        , Html.main_ [ Attr.class "container page-container", Attr.id "main-content"]
             [ Html.h1 [][Html.text "UUID Login"]
             , Html.p [ Attr.class "font-lead"][Html.text "This is the ultra-simple, hard-to-remember, not-so-secure login."]
             , viewForm model

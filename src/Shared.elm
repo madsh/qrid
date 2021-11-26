@@ -21,10 +21,6 @@ type alias Model =
     { storage : Storage    
     }
 
-type alias Banner = {
-    type_ : String
-    , content : String
-}
 
 init : Request -> Flags -> ( Model, Cmd Msg )
 init req flags =

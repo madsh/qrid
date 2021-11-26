@@ -12,7 +12,7 @@ type Msg
 
 layout : List (Html msg) -> List (Html msg)
 layout children =
-    [   header "portalus" "appikus"
+    [   header "portalus" "qrid pro quo"
         , Html.main_ [ Attr.class "page-container pt-0", Attr.id "main-content"] children
     ]
 
@@ -66,8 +66,9 @@ headerNavigation _ =
         Html.div [ Attr.class "navbar navbar-primary"] [ 
             Html.div [ Attr.class "navbar-inner container"][
                 Html.ul [ Attr.class "nav-primary"]
-                    [ headerNavigationItem "Home" Route.Home_
-                    , headerNavigationItem "Sign in" Route.SignIn   
+                    [ headerNavigationItem "Items" Route.Items
+                    , headerNavigationItem "Add" Route.Item   
+                    , headerNavigationItem "Settings" Route.Settings 
                     ]
                 ] {- mangler role attr -}
             ]

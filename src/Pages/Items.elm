@@ -1,4 +1,4 @@
-module Pages.Home_ exposing (Model, Msg, page, view)
+module Pages.Items exposing (Model, Msg, page, view)
 
 import Auth
 import Html
@@ -55,12 +55,12 @@ update storage msg model =
 
 view : Auth.User -> Model -> View Msg
 view user _ =
-    { title = "Homepage"
+    { title = "qrid - your items"
     , body =
         UI.layout [
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
-            [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
-            , Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]
+            [ Html.h1 [ Attr.class ""] [ Html.text "Your Items" ]
+            , Html.p [ Attr.class "font-lead"] [ Html.text "Here is what you have registered so far"]
             ]
          ]
         
