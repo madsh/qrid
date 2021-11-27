@@ -5,14 +5,15 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 import Html.Events as Events
 import Shared exposing (..)
+import Auth
 
 
 type Msg
     = ClickedSignOut
 
-layout : List (Html msg) -> List (Html msg)
-layout children =
-    [   header "portalus" "qrid pro quo"
+layout : Auth.User -> List (Html msg) -> List (Html msg)
+layout user children =
+    [   header user "portalus" "qrid pro quo | qrid, don't quit | be a qridder "
         , Html.main_ [ Attr.class "page-container pt-0", Attr.id "main-content"] children
     ]
 
@@ -25,16 +26,16 @@ h1 label =
 
 
 
-header : String -> String -> Html msg
-header portalName solutionName =
+header : Auth.User -> String -> String -> Html msg
+header user portalName solutionName =
     Html.header [Attr.class "header"]             
-        [ headerPortal portalName
+        [ headerPortal user portalName
         , headerSolution solutionName
         , headerNavigation "navparam" 
         ]
 
-headerPortal : String -> Html msg
-headerPortal portalName =
+headerPortal : Auth.User -> String -> Html msg
+headerPortal user portalName =
     Html.div [ Attr.class "portal-header portal-header-compact"][
         Html.div [Attr.class "portal-header-inner container"]
         [ Html.a [Attr.href "#", Attr.class "logo alert-leave"][Html.span [Attr.class ""][ Html.text portalName]]
@@ -42,7 +43,7 @@ headerPortal portalName =
         , Html.div[Attr.class "portal-info"][
                 Html.p [Attr.class "user"][
                     Html.span [Attr.class "username"][
-                        Html.text "Username" {- need to update to protected element? -}
+                        Html.text user.name
                     ]
                 ]
                 , Html.button [Attr.class "button button-secondary alert-leave d-print-none"][Html.text "Log af"]

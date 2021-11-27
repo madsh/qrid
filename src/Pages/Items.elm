@@ -57,7 +57,7 @@ view : Auth.User -> Model -> View Msg
 view user _ =
     { title = "qrid - your items"
     , body =
-        UI.layout [
+        UI.layout user [
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
             [ Html.h1 [ Attr.class ""] [ Html.text "Your Items" ]
             , Html.p [ Attr.class "font-lead"] [ Html.text "Here is what you have registered so far"]

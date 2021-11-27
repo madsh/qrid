@@ -57,7 +57,7 @@ view : Auth.User -> Model -> View Msg
 view user _ =
     { title = "Homepage"
     , body =
-        UI.layout [
+        UI.layout user [
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
             [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
             , Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]
