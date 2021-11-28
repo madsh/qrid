@@ -14,6 +14,10 @@ import UUID
 import Debug 
 import QRID
 import UUID exposing (Error)
+import Http
+import Domain.Item exposing (Item, itemDecoder, itemEncoder)
+
+
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
@@ -32,21 +36,19 @@ page shared request =
 
 
 type alias Model =
-    { newId : String    
-    , newIdError : String
-    , name : String
-    , nameError : String
-    , submitted : Bool
+    { newIdError : String
+    , nameError : String    
+    , item : Item
+    , createError : Maybe String
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { newId = ""      
+    ( { item = { qrid = "", name = "", description = ""}
       , newIdError = ""
-      , name = ""
-      , nameError = ""
-      , submitted = False
+      , nameError = ""      
+      , createError = Nothing
       }
     , Cmd.none 
     )
@@ -59,50 +61,72 @@ type Msg
     = UpdatedUUID String
     | UpdatedName String
     | BlurName
-    | RegisterPressed
+    | CreateItem
     | TakePhotoPressed
     | TypeInPressed
     | GeneratePressed
+    | ItemCreated (Result Http.Error Item)
 
 
 
 update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
-update storage msg model =
+update storage msg model  =
     case msg of
         UpdatedUUID idvalue ->
-            ( validateUUID { model | newId = idvalue}
-            , Cmd.none
-            )
+            let
+                preItem = model.item
+                updatedItem = 
+                    { preItem | qrid = idvalue }                                    
+            in            
+            ( validateUUID { model |  item = updatedItem } , Cmd.none )
 
         UpdatedName value ->
-            ( { model | name = value}
-            , Cmd.none
-            )
+           let
+                preItem = model.item
+                updatedItem = 
+                    { preItem | name = value }                                    
+            in            
+            ( { model |  item = updatedItem } , Cmd.none )
 
         BlurName ->
-            ( validateName  model
-            , Cmd.none
-            )
+            ( validateName model , Cmd.none )            
+
         TakePhotoPressed ->
-            ( validateUUID { model | newId = "scanned"}
+            let
+                preItem = model.item
+                updatedItem = 
+                    { preItem | qrid = "scanned" }                    
+            in            
+            ( validateUUID { model |  item = updatedItem }
             , Cmd.none
             )
 
         TypeInPressed ->
-            ( validateUUID { model | newId = "00000000-0000-0000-0000-000000000000"}
-            , Cmd.none
-            )
+            let
+                preItem = model.item
+                updatedItem = 
+                    { preItem | qrid = "00000000-0000-0000-0000-000000000000" }                    
+            in            
+            ( validateUUID { model |  item = updatedItem } , Cmd.none )
 
         GeneratePressed ->
-            ( validateUUID { model | newId = UUID.toString QRID.generate}
-            , Cmd.none
+            let
+                preItem = model.item
+                updatedItem = 
+                    { preItem | qrid = UUID.toString QRID.generate }                    
+            in            
+            ( validateUUID { model |  item = updatedItem } , Cmd.none )
+
+        CreateItem ->
+            ( (validate model )
+            , createItem model.item
             )
 
-        RegisterPressed ->
-            ( (validate { model | submitted = True } )
-            , Cmd.none
-            )
+        ItemCreated (Ok item) ->
+            ( {model | item = item, createError = Nothing}, Cmd.none)
 
+        ItemCreated (Err error) ->
+            ( {model | createError = Just (buildErrorMessage error)}, Cmd.none)
 
 validate : Model -> Model
 validate model  = 
@@ -113,14 +137,14 @@ validate model  =
 
 validateName: Model -> Model
 validateName model = 
-    if (String.length model.name) < 5 then 
+    if (String.length model.item.name) < 5 then 
         { model | nameError = "Names must be longer than 5" }
     else 
         { model | nameError = ""}
 
 validateUUID: Model -> Model
 validateUUID model = 
-     if (String.length model.newId) < 8 then 
+     if (String.length model.item.qrid) < 8 then 
         { model | newIdError = "Ids must be longer than 8" }
     else 
         { model | newIdError = ""}
@@ -135,6 +159,34 @@ hasErrors model =
         True
     else 
         False
+
+
+createItem: Item -> Cmd Msg         
+createItem  item =
+    Http.post 
+      { url = "http://localhost:5019/items"
+      , body = Http.jsonBody (itemEncoder item)
+      , expect = Http.expectJson ItemCreated itemDecoder      
+    }
+
+buildErrorMessage : Http.Error -> String
+buildErrorMessage httpError =
+    case httpError of
+        Http.BadUrl message ->
+            message
+
+        Http.Timeout ->
+            "Server is taking too long to respond. Please try again later."
+
+        Http.NetworkError ->
+            "Unable to reach server."
+
+        Http.BadStatus statusCode ->
+            "Request failed with status code: " ++ String.fromInt statusCode
+
+        Http.BadBody message ->
+            message
+
 -- VIEW
 
 view : Auth.User -> Request -> Model -> View Msg
@@ -150,6 +202,7 @@ view user request model =
               , Html.button [ Events.onClick TypeInPressed,  A.class "button button-primary"] [ Html.text "Type it in"]
               , Html.button [ Events.onClick GeneratePressed, A.class "button button-secondary"] [ Html.text "Generate"]
               ]
+            , viewError model.createError
             , viewForm user model            
             , viewFormRegister user model
             ]
@@ -157,7 +210,13 @@ view user request model =
         
     }
 
+viewError : Maybe String -> Html msg 
+viewError maybeError = 
+    case maybeError of
+        Just error -> 
+            Html.div [][Html.text ("Error: " ++ error)]
 
+        Nothing -> Html.text ""
 viewForm : Auth.User -> Model -> Html Msg
 viewForm user model =
     Html.form [ A.class "form-div"]
@@ -174,11 +233,11 @@ viewFormUUID user model =
       , Html.span [A.class "form-hint", A.id "hint2"][ Html.text "A UUID has the form of 88c973e3-f83f-4360-a320-d8844c365130"]
       , viewFormUUIDError user model
       , Html.div [A.class "form-input-wrapper form-input-wrapper-prefeix"]
-        [ Html.div [A.class "form-input-prefix"][ Html.text (if (((String.length model.newId) > 7) && (String.length model.newIdError < 1)) then "✔" else "UUID")]
+        [ Html.div [A.class "form-input-prefix"][ Html.text (if (((String.length model.item.qrid) > 7) && (String.length model.newIdError < 1)) then "✔" else "UUID")]
         , Html.input [ A.id "form-uuid-field"
                      , A.name "uuid-field"                     
                      , A.class "form-input input-width-xl"
-                     , A.value model.newId
+                     , A.value model.item.qrid
                      , Events.onInput UpdatedUUID 
                      ] []
         , Html.span [A.class "ml-9"][ ] 
@@ -203,7 +262,7 @@ viewFormName user model =
         "Name your item"
         "A friendly name for your item"
         model.nameError
-        (Html.input [A.value model.name, Events.onInput UpdatedName, Events.onBlur BlurName,  A.class "Form-input  input-char-27", A.id "form.name", A.type_ "text"][] {- aria and control id-})
+        (Html.input [A.value model.item.name, Events.onInput UpdatedName, Events.onBlur BlurName,  A.class "Form-input  input-char-27", A.id "form.name", A.type_ "text"][] {- aria and control id-})
         user 
         model 
     
@@ -225,7 +284,7 @@ viewFormRegister : Auth.User -> Model -> Html Msg
 viewFormRegister user model =
     Html.button [ A.disabled (hasErrors model)
                 , A.class "button button-primary mt-9" 
-                , Events.onClick RegisterPressed               
+                , Events.onClick CreateItem               
                 ]
                 [ Html.text "Register"]
 

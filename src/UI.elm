@@ -70,8 +70,7 @@ headerNavigation request _ =
                 Html.ul [ Attr.class "nav-primary"]
                     [ headerNavigationItem "Items" Route.Items request.route
                     , headerNavigationItem "Add" Route.Item request.route  
-                    , headerNavigationItem "Settings" Route.Settings request.route
-                    , Html.span [][Html.text ("from url" ++ request.url.path)]
+                    , headerNavigationItem "Settings" Route.Settings request.route                    
                     ]
                 ] {- mangler role attr -}
             ]
