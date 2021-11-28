@@ -210,13 +210,29 @@ view user request model =
         
     }
 
-viewError : Maybe String -> Html msg 
+viewError : Maybe String -> Html Msg 
 viewError maybeError = 
     case maybeError of
         Just error -> 
-            Html.div [][Html.text ("Error: " ++ error)]
+            viewErrorString error
 
         Nothing -> Html.text ""
+
+
+viewErrorString : String -> Html Msg 
+viewErrorString errorMessage = 
+    let 
+        errorHeading = "Could not save your item"
+    in
+    Html.div[A.class "alert alert-error"]
+    [
+        Html.div [A.class "alert-body"] 
+        [ Html.p [A.class "alert-heading"] [Html.text errorHeading ]
+        , Html.p [A.class "alert-text"] [Html.text ("Error: " ++ errorMessage)]
+        ]
+    ]
+
+
 viewForm : Auth.User -> Model -> Html Msg
 viewForm user model =
     Html.form [ A.class "form-div"]
