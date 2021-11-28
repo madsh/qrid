@@ -47,7 +47,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { items = RemoteData.NotAsked}, Cmd.none )
+    ( { items = RemoteData.NotAsked}, httpGetItems )
 
 
 
@@ -55,7 +55,7 @@ init =
 
 
 type Msg
-    = SendHttpRequest 
+    = FetchItems 
     | DataRecieved (WebData (List Item))
 
 
@@ -82,7 +82,7 @@ itemDecoder =
 update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
 update storage msg model =
     case msg of
-        SendHttpRequest ->
+        FetchItems ->
             ( {model | items = RemoteData.Loading}, httpGetItems)
         
         DataRecieved response ->
@@ -128,7 +128,7 @@ viewForm : Auth.User -> Model -> Html Msg
 viewForm user model = 
     Html.div [class "form-group search mb-6"][
         Html.input [class "form-input", A.id "searchTable", A.type_ "search"][], 
-        Html.button [class "button button-search", onClick SendHttpRequest] [Html.text "Search"]
+        Html.button [class "button button-search", onClick FetchItems] [Html.text "Search"]
     ]
 
 
