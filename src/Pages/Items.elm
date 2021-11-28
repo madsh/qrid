@@ -6,7 +6,7 @@ import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required, optional)
-
+import RemoteData exposing (RemoteData, WebData)
 
 
 
@@ -41,15 +41,13 @@ type alias Item =
 
 
 type alias Model =
-    { items : List Item
-    , errorMessage : Maybe String
-     }
+    { items : WebData (List Item) }
 
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { items = [], errorMessage = Nothing}, Cmd.none )
+    ( { items = RemoteData.NotAsked}, Cmd.none )
 
 
 
@@ -58,14 +56,15 @@ init =
 
 type Msg
     = SendHttpRequest 
-    | DataRecieved (Result Http.Error (List Item))
+    | DataRecieved (WebData (List Item))
 
 
-getItems : Cmd Msg
-getItems = 
+httpGetItems : Cmd Msg
+httpGetItems = 
     Http.get 
         { url = "http://localhost:5019/items"
-        , expect = Http.expectJson DataRecieved itemListDecoder
+        , expect = itemListDecoder
+            |> Http.expectJson (RemoteData.fromResult >> DataRecieved )
         }
 
 
@@ -84,13 +83,10 @@ update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
 update storage msg model =
     case msg of
         SendHttpRequest ->
-            ( model, getItems )
+            ( {model | items = RemoteData.Loading}, httpGetItems)
         
-        DataRecieved (Ok itemList) ->            
-            ( { model | items = itemList } , Cmd.none)
-
-        DataRecieved (Err httpError) -> 
-            ( {model | errorMessage = Just (buildErrorMessage httpError)}, Cmd.none)
+        DataRecieved response ->
+            ( { model | items = response}, Cmd.none)
 
 buildErrorMessage : Http.Error -> String
 buildErrorMessage httpError =
@@ -119,8 +115,7 @@ view user model =
         UI.layout user [ 
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ class ""] [ Html.text "Your Items" ]
-            , Html.p [ class "font-lead"] [ Html.text "Here is what you have registered so far"]            
-            , Html.div [][Html.text (" items indeholder " ++ (String.fromInt( List.length model.items)))]
+            , Html.p [ class "font-lead"] [ Html.text "Here is what you have registered so far"]                        
             , viewForm user model
             , viewItemsOrError model            
             ]
@@ -139,11 +134,12 @@ viewForm user model =
 
 viewItemsOrError : Model -> Html Msg 
 viewItemsOrError model = 
-    case model.errorMessage of 
-        Just message ->
-            viewError message
-        Nothing ->
-            viewItems model.items
+    case model.items of
+        RemoteData.NotAsked -> Html.text "not asked"
+        RemoteData.Loading -> Html.text "loading"
+        RemoteData.Failure httpError -> viewError (buildErrorMessage httpError)
+        RemoteData.Success items -> viewItems items
+
 
 viewError : String -> Html Msg 
 viewError errorMessage = 
