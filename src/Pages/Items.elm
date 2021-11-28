@@ -2,7 +2,11 @@ module Pages.Items exposing (Model, Msg, page, view)
 
 import Auth
 import Html exposing (..)
+import Html.Events exposing (onClick)
 import Http
+import Json.Decode as D exposing (Decoder, at, field, int, map3, string)
+
+
 import Html.Attributes exposing (class)
 import Html.Attributes as A exposing (id, type_)
 
@@ -12,8 +16,7 @@ import Shared
 import Storage exposing (Storage)
 import UI
 import View exposing (View)
-import Html.Events exposing (onClick)
-import Json.Decode as D exposing (Decoder, at, field, int, map3, string)
+
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
@@ -32,7 +35,9 @@ page shared _ =
 
 
 type alias Model =
-    { items : ItemList }
+    { items : ItemList
+    , errorMessage : String
+     }
 
 
 type alias Item = 
@@ -46,7 +51,7 @@ type alias ItemList =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { items = []}, Cmd.none )
+    ( { items = [], errorMessage = ""}, Cmd.none )
 
 
 
@@ -86,8 +91,9 @@ update storage msg model =
         DataRecieved (Ok itemList) ->            
             ( { model | items = itemList } , Cmd.none)
 
-        DataRecieved (Err _) -> 
-            ( model, Cmd.none )
+        DataRecieved (Err error) -> 
+            ( {model | errorMessage = "Undhandled JSON error?"}, Cmd.none)
+
 
 
 view : Auth.User -> Model -> View Msg
