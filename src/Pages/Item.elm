@@ -16,6 +16,7 @@ import QRID
 import UUID exposing (Error)
 import Http
 import Domain.Item exposing (Item, itemDecoder, itemEncoder)
+import Gen.Route as Route exposing (Route)
 
 
 
@@ -123,7 +124,9 @@ update storage msg model  =
             )
 
         ItemCreated (Ok item) ->
-            ( {model | item = item, createError = Nothing}, Cmd.none)
+            ( {model | item = item, createError = Nothing}
+            , Cmd.none
+            )
 
         ItemCreated (Err error) ->
             ( {model | createError = Just (buildErrorMessage error)}, Cmd.none)
