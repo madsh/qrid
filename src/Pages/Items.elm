@@ -1,11 +1,12 @@
 module Pages.Items exposing (Model, Msg, page, view)
 
 import Auth
+
 import Html exposing (..)
 import Html.Events exposing (onClick)
 import Http
-import Json.Decode as Decode exposing (Decoder, int, list, string)
-import Json.Decode.Pipeline exposing (required, optional)
+import Json.Decode as Decode
+import Domain.Item exposing (Item, itemsDecoder)
 import RemoteData exposing (RemoteData, WebData)
 
 
@@ -31,25 +32,15 @@ page shared _ =
             , subscriptions = \_ -> Sub.none
             }
 
-
-
--- INIT
-type alias Item = 
-    { name : String
-    , description : String
-    , qrid : String  }
-
-
+-- MODEL
 type alias Model =
     { items : WebData (List Item) }
 
-
+-- INIT
 
 init : ( Model, Cmd Msg )
 init =
-    ( { items = RemoteData.NotAsked}, httpGetItems )
-
-
+    ( { items = RemoteData.Loading}, httpGetItems )
 
 -- UPDATE
 
@@ -57,26 +48,6 @@ init =
 type Msg
     = FetchItems 
     | DataRecieved (WebData (List Item))
-
-
-httpGetItems : Cmd Msg
-httpGetItems = 
-    Http.get 
-        { url = "http://localhost:5019/items"
-        , expect = itemListDecoder
-            |> Http.expectJson (RemoteData.fromResult >> DataRecieved )
-        }
-
-
-itemListDecoder : Decoder (List Item)
-itemListDecoder = Decode.list itemDecoder          
-
-itemDecoder : Decoder Item 
-itemDecoder = 
-    Decode.succeed Item 
-        |> required "qrid" string
-        |> required "name" string
-        |> optional "description" string " - no description - "
 
 
 update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
@@ -87,6 +58,17 @@ update storage msg model =
         
         DataRecieved response ->
             ( { model | items = response}, Cmd.none)
+
+
+
+
+httpGetItems : Cmd Msg
+httpGetItems = 
+    Http.get 
+        { url = "http://localhost:5019/items"
+        , expect = itemsDecoder
+            |> Http.expectJson (RemoteData.fromResult >> DataRecieved )
+        }
 
 buildErrorMessage : Http.Error -> String
 buildErrorMessage httpError =
@@ -106,7 +88,9 @@ buildErrorMessage httpError =
         Http.BadBody message ->
             message
 
-{- VIEW -}
+
+-- VIEWS
+
 
 view : Auth.User -> Model -> View Msg
 view user model =
@@ -162,9 +146,8 @@ viewItems items =
       [ Html.thead []
         [ Html.tr[]
           [ Html.th [][Html.text "Name"]
-          , Html.th [][Html.text "Description"]
-          , Html.th [][Html.text "QRID"]
-          ]
+          , Html.th [][Html.text "Description"]          
+          , Html.th [][]          ]
         ]
       , Html.tbody [](List.map viewTableRow items)
       ]
@@ -174,8 +157,8 @@ viewItems items =
 
 viewTableRow: Item -> Html Msg 
 viewTableRow item = 
-    Html.tr []
+    Html.tr [ ]
     [ Html.td [][Html.text item.name]
-    , Html.td [][Html.text item.description]
-    , Html.td [][Html.text item.qrid]
+    , Html.td [][Html.text item.description]    
+    , Html.td [][Html.a [A.href ("/item/" ++ item.qrid)][Html.text "edit"]]
     ]
