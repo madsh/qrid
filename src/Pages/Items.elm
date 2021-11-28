@@ -23,12 +23,12 @@ import View exposing (View)
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
-page shared _ =
+page shared request =
     Page.protected.element <|
         \user ->
             { init = init
             , update = update shared.storage
-            , view = view user
+            , view = view user request
             , subscriptions = \_ -> Sub.none
             }
 
@@ -92,11 +92,11 @@ buildErrorMessage httpError =
 -- VIEWS
 
 
-view : Auth.User -> Model -> View Msg
-view user model =
+view : Auth.User -> Request -> Model -> View Msg
+view user request model =
     { title = "qrid - your items"
     , body =
-        UI.layout user [ 
+        UI.layout user request  [ 
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ class ""] [ Html.text "Your Items" ]
             , Html.p [ class "font-lead"] [ Html.text "Here is what you have registered so far"]                        

@@ -17,12 +17,12 @@ import UUID exposing (Error)
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
-page shared _ =
+page shared request =
     Page.protected.element <|
         \user ->
             { init = init
             , update = update shared.storage
-            , view = view user
+            , view = view user request
             , subscriptions = \_ -> Sub.none
             }
 
@@ -137,11 +137,11 @@ hasErrors model =
         False
 -- VIEW
 
-view : Auth.User -> Model -> View Msg
-view user model =
+view : Auth.User -> Request -> Model -> View Msg
+view user request model =
     { title = "qrid - your items"
     , body =
-        UI.layout user  [
+        UI.layout user request  [
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ A.class ""] [ Html.text "Register an item" ]
             , Html.p [ A.class "font-lead"] [ Html.text "Here you can add a new item to your collection"]

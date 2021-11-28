@@ -13,12 +13,12 @@ import View exposing (View)
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
-page shared _ =
+page shared request =
     Page.protected.element <|
         \user ->
             { init = init
             , update = update shared.storage
-            , view = view user
+            , view = view user request
             , subscriptions = \_ -> Sub.none
             }
 
@@ -53,11 +53,11 @@ update storage msg model =
             )
 
 
-view : Auth.User -> Model -> View Msg
-view user _ =
+view : Auth.User -> Request -> Model -> View Msg
+view user request _ =
     { title = "Homepage"
     , body =
-        UI.layout user [
+        UI.layout user request [
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
             [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
             , Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]
