@@ -6,10 +6,10 @@ import Html.Attributes as Attr
 import Html.Events as Events
 import Shared exposing (..)
 import Auth
+import Shared
 
 
-type Msg
-    = ClickedSignOut
+
 
 layout : Auth.User -> List (Html msg) -> List (Html msg)
 layout user children =
@@ -23,7 +23,6 @@ h1 label =
     Html.div [ Attr.class "col-12 col-lg-7"][
     Html.h1 [] [ Html.text label ]
     ]
-
 
 
 header : Auth.User -> String -> String -> Html msg
