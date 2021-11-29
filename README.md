@@ -1,7 +1,7 @@
 # qrid
 losts, founds and more
 
-<a href="public/index.html">Try!</a>
+<a href="https://madsh.github.io/qrid/public/index.html">Try!</a>
 
-<a href="public/scanner.html">Scanner</a>
+<a href="https://madsh.github.io/qrid/public/scanner.html">Scanner</a>
 
