@@ -137,7 +137,7 @@ validate model  =
 
 
 
-
+ 
 validateName: Model -> Model
 validateName model = 
     if (String.length model.item.name) < 5 then 
