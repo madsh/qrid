@@ -67,7 +67,7 @@ function testData(data) {
     console.log("hostname: " + url.hostname);
     if (url.hostname == "qr.id") {
         outputLink.style.backgroundColor = "green";
-        window.location = "http://localhost:1234/item" + url.pathname;
+        window.location = "./item" + url.pathname;
     } else {
         // deal with pure uuids
         outputLink.style.backgroundColor = "red";
