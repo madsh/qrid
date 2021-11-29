@@ -15,7 +15,7 @@ import Request exposing (Request)
 
 layout : Auth.User -> Request -> List (Html msg) -> List (Html msg)
 layout user request children =
-    [   header user request "portalus" "qrid pro quo | qrid, don't quit | be a qridder "
+    [   header user request "portalus | qrid pro quo | qrid, don't quit | be a qridder " ""
         , Html.main_ [ Attr.class "page-container pt-0", Attr.id "main-content"] children
     ]
 
@@ -32,7 +32,7 @@ header user request portalName solutionName =
     Html.header [Attr.class "header"]             
         [ headerPortal user portalName
         , headerSolution solutionName request
-        , headerNavigation request "navparam" 
+        --, headerNavigation request  
         ]
 
 headerPortal : Auth.User -> String -> Html msg
@@ -58,16 +58,22 @@ headerSolution appName request =
         Html.div [Attr.class "solution-header-inner container"]
             [ Html.div [Attr.class "solution-heading d-flex align-items-center"]
             [ Html.a [Attr.href "/", Attr.title appName][ Html.text appName]
+            , Html.ul [ Attr.class "nav-primary"]            
+                    [ Html.li [][ Html.a [ Attr.href "/scanner.html", Attr.class "nav-link" ][Html.span [][Html.text "Scan"]] ] 
+                    , headerNavigationItem "Items" Route.Items request.route
+                    , headerNavigationItem "Add" Route.Item request.route  
+                    , headerNavigationItem "Settings" Route.Settings request.route                    
+                    ]
             ]      
         ] 
     ] 
 
-headerNavigation : Request -> String -> Html msg
-headerNavigation request _ =
+headerNavigation : Request -> Html msg
+headerNavigation request  =
     Html.nav [ Attr.class "nav d-none d-lg-block"] [ {- missing aria-label -}
         Html.div [ Attr.class "navbar navbar-primary"] [ 
             Html.div [ Attr.class "navbar-inner container"][
-                Html.ul [ Attr.class "nav-primary"]
+                Html.ul [ Attr.class "nav-primary"]                    
                     [ headerNavigationItem "Items" Route.Items request.route
                     , headerNavigationItem "Add" Route.Item request.route  
                     , headerNavigationItem "Settings" Route.Settings request.route                    
