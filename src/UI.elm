@@ -8,6 +8,7 @@ import Shared exposing (..)
 import Auth
 import Shared
 import Request exposing (Request)
+import Url.Builder exposing (absolute)
 
 
 
@@ -15,7 +16,7 @@ import Request exposing (Request)
 
 layout : Auth.User -> Request -> List (Html msg) -> List (Html msg)
 layout user request children =
-    [   header user request "portalus | qrid pro quo | qrid, don't quit | be a qridder " ""
+    [   header user request "qrid pro quo" ""
         , Html.main_ [ Attr.class "page-container pt-0", Attr.id "main-content"] children
     ]
 
@@ -56,17 +57,16 @@ headerSolution : String -> Request -> Html msg
 headerSolution appName request =
     Html.div [ Attr.class "solution-header"][
         Html.div [Attr.class "solution-header-inner container"]
-            [ Html.div [Attr.class "solution-heading d-flex align-items-center"]
-            [ Html.a [Attr.href "/", Attr.title appName][ Html.text appName]
-            , Html.ul [ Attr.class "nav-primary"]            
-                    [ Html.li [][ Html.a [ Attr.href "/scanner.html", Attr.class "nav-link" ][Html.span [][Html.text "Scan"]] ] 
-                    , headerNavigationItem "Items" Route.Items request.route
-                    , headerNavigationItem "Add" Route.Item request.route  
-                    , headerNavigationItem "Settings" Route.Settings request.route                    
-                    ]
+            [ Html.div [Attr.class "d-flex align-items-center"]
+            [ Html.a [ Attr.href "/", Attr.title appName][ Html.text appName]
+            , Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (absolute ["scanner.html"][])][ Html.text "Scan"] 
+            , Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Items"]
+            , Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.Item)][Html.text "Add"]                                                           
+            , Html.a [ Attr.class "mynav displayheading-2 text-negative mr-4", Attr.href (Route.toHref Route.Settings)][Html.text "Settings"]                                                             
+            ]
             ]      
         ] 
-    ] 
+    
 
 headerNavigation : Request -> Html msg
 headerNavigation request  =

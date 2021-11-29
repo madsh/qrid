@@ -9,10 +9,13 @@ const outputLink = document.getElementById("outputLink");
 
 const btnScanQR = document.getElementById("btn-scan-qr");
 
+document.body.style.backgroundColor = "black";
+
 let scanning = false;
 
 qrcode.callback = res => {
     if (res) {
+        console.log("Got a call back with " + res)
         outputData.innerText = res;
 
         scanning = false;
@@ -63,15 +66,36 @@ function scan() {
 }
 
 function testData(data) {
-    const url = new URL(data);
-    console.log("hostname: " + url.hostname);
-    if (url.hostname == "qr.id") {
-        outputLink.style.backgroundColor = "green";
-        window.location = "./?qrid=" + url.pathname;
-    } else {
-        // deal with pure uuids
-        outputLink.style.backgroundColor = "red";
-    }
+    try {
 
-    outputLink.innerText = url.hostname + " (tested) " + url.pathname;
+        console.log("Testing " + data);
+        const url = new URL(data);
+        console.log("Got parst parse with : " + url)
+
+
+
+        qrResult.hidden = false;
+        qrLink.hidden = false;
+        console.log("hostname: " + url.hostname);
+        if (url.hostname == "qr.id") {
+            outputLink.style.backgroundColor = "green";
+            console.log("Got green and forwarding")
+            outputLink.innerText = url.hostname + " (tested good) " + url.pathname;
+            window.location = "./?qrid=" + url.pathname;
+        } else {
+            // deal with pure uuids
+            outputLink.style.backgroundColor = "red";
+            outputLink.innerText = url + " (tested bad) ";
+            console.log("Got red and forwarding")
+            window.location = "./?qrid=" + url;
+        }
+
+
+    } catch (error) {
+        console.log("Caught error parsing url " + error)
+        qrLink.hidden = false;
+        outputLink.style.backgroundColor = "red";
+        outputLink.innerText = "Failed to parse " + data + " as an URL";
+        return;
+    }
 }
