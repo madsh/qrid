@@ -248,7 +248,7 @@ viewFormUUID : Auth.User -> Model -> Html Msg
 viewFormUUID user model =
     Html.div [ A.class "form-group", A.id "form-group-uuid"] [
     Html.label [A.class "form-label", A.for "form-uuid-field"][ Html.text "UUID"]
-      , Html.span [A.class "form-hint", A.id "hint1"][ Html.text "What is the universally unique id you want to register this item under?"]
+      , Html.span [A.class "form-hint", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
       , Html.span [A.class "form-hint", A.id "hint2"][ Html.text "A UUID has the form of 88c973e3-f83f-4360-a320-d8844c365130"]
       , viewFormUUIDError user model
       , Html.div [A.class "form-input-wrapper form-input-wrapper-prefeix"]
