@@ -11,6 +11,7 @@ import Storage exposing (Storage)
 import UI
 import Dict exposing (Dict)
 import View exposing (View)
+import Browser.Navigation
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
@@ -43,6 +44,7 @@ init =
 
 type Msg
     = ClickedSignOut
+    | ClickedScan
 
 
 update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
@@ -52,7 +54,10 @@ update storage msg model =
             ( model
             , Storage.signOut storage
             )
-
+        ClickedScan ->
+            ( model
+            , Browser.Navigation.load "scanner.html"
+            )
 
 view : Auth.User -> Request -> Model -> View Msg
 view user request _ =
@@ -63,7 +68,7 @@ view user request _ =
             [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
             , fromScanner user request
             , Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]
-            
+            , Html.button [ Attr.class "mx-6", Events.onClick ClickedScan ] [ Html.text "Click to try the scanner!" ]
             ]
          ]
         
