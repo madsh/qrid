@@ -65,7 +65,7 @@ update storage msg model =
 httpGetItems : Cmd Msg
 httpGetItems = 
     Http.get 
-        { url = "http://localhost:5019/items"
+        { url = "http://localhost:3000/items"
         , expect = itemsDecoder
             |> Http.expectJson (RemoteData.fromResult >> DataRecieved )
         }
@@ -96,7 +96,7 @@ view : Auth.User -> Request -> Model -> View Msg
 view user request model =
     { title = "qrid - your items"
     , body =
-        UI.layout user request  [ 
+        UI.layout user   [ 
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ class ""] [ Html.text "Your Items" ]
             , Html.p [ class "font-lead"] [ Html.text "Here is what you have registered so far"]                        

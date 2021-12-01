@@ -1,4 +1,4 @@
-module Pages.Item exposing (Model, Msg, page, view)
+module Pages.NewItem exposing (Model, Msg, page)
 
 import Auth
 import Html exposing (Html)
@@ -12,11 +12,12 @@ import UI
 import View exposing (View)
 import UUID
 import Debug 
-import QRID
+import Domain.QRID as QRID
 import UUID exposing (Error)
 import Http
 import Domain.Item exposing (Item, itemDecoder, itemEncoder)
 import Gen.Route as Route exposing (Route)
+import Browser.Navigation
 
 
 
@@ -125,7 +126,7 @@ update storage msg model  =
 
         ItemCreated (Ok item) ->
             ( {model | item = item, createError = Nothing}
-            , Cmd.none
+            , Browser.Navigation.load (Route.toHref Route.Items)
             )
 
         ItemCreated (Err error) ->
@@ -167,7 +168,7 @@ hasErrors model =
 createItem: Item -> Cmd Msg         
 createItem  item =
     Http.post 
-      { url = "http://localhost:5019/items"
+      { url = "http://localhost:3000/items"
       , body = Http.jsonBody (itemEncoder item)
       , expect = Http.expectJson ItemCreated itemDecoder      
     }
@@ -196,7 +197,7 @@ view : Auth.User -> Request -> Model -> View Msg
 view user request model =
     { title = "qrid - your items"
     , body =
-        UI.layout user request  [
+        UI.layout user [
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ A.class ""] [ Html.text "Register an item" ]
             , Html.p [ A.class "font-lead"] [ Html.text "Here you can add a new item to your collection"]

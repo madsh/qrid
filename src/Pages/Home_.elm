@@ -63,7 +63,7 @@ view : Auth.User -> Request -> Model -> View Msg
 view user request _ =
     { title = "Homepage"
     , body =
-        UI.layout user request [
+        UI.layout user [
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
             [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
             , fromScanner user request

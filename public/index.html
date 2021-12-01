@@ -14,7 +14,45 @@
     <style>
         .mynav {
             font-size: medium;
-            font-weight: 700;
+            font-weight: 600;
+            text-decoration: none;
+            color: black;
+        }
+        
+        .mynav:hover {
+            text-decoration: underline;
+            text-decoration-color: red;
+            text-decoration-style: double;
+        }
+        
+        .mynav:visited {
+            color: black;
+        }
+        
+        #topbox {
+            display: flex;
+            flex-flow: row wrap;
+        }
+        
+        #topbox .topleft {
+            width: 33.33333%;
+            text-align: left;
+            font-weight: bolder;
+        }
+        
+        #topbox .topcenter {
+            width: 33.33333%;
+            text-align: center;
+        }
+        
+        #topbox .topright {
+            width: 33.33333%;
+            text-align: right;
+        }
+        
+        .small-id {
+            font-weight: 100;
+            font-size: smaller;
         }
     </style>
 

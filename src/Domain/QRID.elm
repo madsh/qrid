@@ -1,4 +1,4 @@
-module QRID exposing (generate)
+module Domain.QRID exposing (generate)
 
 
 import UUID exposing (UUID)

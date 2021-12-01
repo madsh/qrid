@@ -1,4 +1,5 @@
-module Pages.SignIn exposing (Model, Msg, page)
+module Pages.SignUp exposing (Model, Msg, page)
+
 
 import Gen.Params.SignIn exposing (Params)
 import Html exposing (Html)
@@ -16,7 +17,7 @@ page : Shared.Model -> Request.With Params -> Page.With Model Msg
 page shared req =
     Page.element
         { init = init
-        , update = update shared.storage
+        , update = update
         , view = view
         , subscriptions = subscriptions
         }
@@ -27,14 +28,13 @@ page shared req =
 
 
 type alias Model =
-    { name : String }
+    { username : String }
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { name = "" }
-    , Cmd.none
-    )
+    ( { username = ""
+    }, Cmd.none )
 
 
 
@@ -42,22 +42,14 @@ init =
 
 
 type Msg
-    = UpdatedName String
-    | SubmittedSignInForm
+    = ReplaceMe
 
 
-update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
-update storage msg model =
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
     case msg of
-        UpdatedName name ->
-            ( { model | name = name }
-            , Cmd.none
-            )
-
-        SubmittedSignInForm ->
-            ( model
-            , Storage.signIn { name = model.name } storage
-            )
+        ReplaceMe ->
+            ( model, Cmd.none )
 
 
 
@@ -72,15 +64,14 @@ subscriptions model =
 
 -- VIEW
 
-
 view : Model -> View Msg
 view model =
     { title = "Sign in"
     , body = 
         [ Html.header [][]
         , Html.main_ [ Attr.class "container page-container", Attr.id "main-content"]
-            [ Html.h1 [][Html.text "UUID Login"]
-            , Html.p [ Attr.class "font-lead"][Html.text "This is the ultra-simple, hard-to-remember, not-so-secure login."]
+            [ Html.h1 [][Html.text "Sign up"]
+            , Html.p [ Attr.class "font-lead"][Html.text "This is a special sign up. You don't have to choose a username, pick a password, give us your email or phone number. All you need is ... an UUID. But don't share it and don't forget it!"]
             , viewForm model
         ]
     ]
@@ -89,9 +80,22 @@ view model =
 
 viewForm : Model -> Html Msg
 viewForm model =
-    Html.form [ Attr.class "form-group signin-form", Events.onSubmit SubmittedSignInForm]
-    [ Html.label [ Attr.class "form.label", Attr.for "signin-form"][ Html.text "Login to register og manage your items"]
-    , Html.span [Attr.class "form-hint", Attr.id "signin-form"][ Html.text "Use your UUID :-)"]
+    Html.form [ Attr.class "form-group signup-form"]
+    [ Html.label [ Attr.class "form-label", Attr.for "signup-form"][ Html.text "Sign up to register and manage your items"]
+    , Html.span [Attr.class "form-hint", Attr.id "signin-hint"][]
+    , Html.div [Attr.class "form-input-wrapper form-input-wrapper--prefix mt-3"]
+      [ Html.div [Attr.class "form-input-prefix"][Html.text "UUID"]
+      , Html.input [Attr.class "form-input input-width-l", Attr.id "username"][]     
+      ]
+    , Html.button [ Attr.class "button button-primary mt-6", Attr.disabled (String.isEmpty "")][ Html.text "Use this"]
+    , Html.button [ Attr.class "button button-secondary", Attr.disabled (String.isEmpty "")][ Html.text "Show me a new one"]
+    ]    
+
+
+{-
+    Html.form [ Attr.class "form-group signup-form"]
+    [ Html.label [ Attr.class "form-label", Attr.for "signup-form"][ Html.text "Sign up to register and manage your items"]
+    , Html.span [Attr.class "form-hint", Attr.id "signin-form"][]
     , Html.span [Attr.class "form-error-message", Attr.id "signin-form-error"]
         [ Html.span[Attr.class "sr-only"][Html.text "Error:"
         , Html.text "UUID is not registered as a user"
@@ -108,22 +112,4 @@ viewForm model =
     , Html.a [ Attr.href (Route.toHref Route.SignUp), Attr.class "ml-3"][ Html.text "or sign up"]            {- replace with route -}
     ]
     ]
-
-
-{-
-UI.layout
-            [ Html.form [ Events.onSubmit SubmittedSignInForm ]
-                [ Html.label []
-                    [ Html.span [] [ Html.text "Name" ]
-                    , Html.input
-                        [ Attr.type_ "text"
-                        , Attr.value model.name
-                        , Events.onInput UpdatedName
-                        ]
-                        []
-                    ]
-                , Html.button [ Attr.disabled (String.isEmpty model.name) ]
-                    [ Html.text "Sign in" ]
-                ]
-            ]
 -}
