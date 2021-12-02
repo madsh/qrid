@@ -60,7 +60,7 @@ update storage msg model =
             )
         ClickedGenerate ->
             ( model
-            , Browser.Navigation.load "generator-demo.html"
+            , Browser.Navigation.load "generator-demo.html?qrid=0000-0000-0000"
             )
 
 view : Auth.User -> Request -> Model -> View Msg

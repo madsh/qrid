@@ -25,6 +25,10 @@ qrcode.callback = res => {
         });
         testData(res);
 
+        // we found something....
+
+
+
         qrResult.hidden = false;
         qrLink.hidden = false;
         canvasElement.hidden = true;
@@ -71,23 +75,27 @@ function testData(data) {
         console.log("Testing " + data);
         const url = new URL(data);
         console.log("Got parst parse with : " + url)
-
+        console.log("new?" + new URLSearchParams(window.location.search).has("new"))
 
 
         qrResult.hidden = false;
         qrLink.hidden = false;
         console.log("hostname: " + url.hostname);
-        if (url.hostname == "qr.id") {
+        if (url.hostname == "qrid.info") {
             outputLink.style.backgroundColor = "green";
-            console.log("Got green and forwarding")
+
             outputLink.innerText = url.hostname + " (tested good) " + url.pathname;
-            window.location = "./?qrid=" + url.pathname;
+            if (new URLSearchParams(window.location.search).has("new"))
+                window.location = "new-item?qrid=" + url.pathname.slice(1);
+            else
+                window.location = "item" + url.pathname;
+
         } else {
             // deal with pure uuids
             outputLink.style.backgroundColor = "red";
             outputLink.innerText = url + " (tested bad) ";
             console.log("Got red and forwarding")
-            window.location = "./?qrid=" + url;
+                //window.location = "./?qrid=" + url;
         }
 
 
@@ -96,6 +104,6 @@ function testData(data) {
         qrLink.hidden = false;
         outputLink.style.backgroundColor = "red";
         outputLink.innerText = "Failed to parse " + data + " as an URL";
-        return;
+        return false;
     }
 }

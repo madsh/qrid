@@ -12,6 +12,8 @@ import UI
 import View exposing (View)
 import UUID
 import Debug 
+import Dict exposing (Dict)
+import Url.Parser.Query as Query
 import Domain.QRID as QRID
 import UUID exposing (Error)
 import Http
@@ -26,7 +28,7 @@ page : Shared.Model -> Request -> Page.With Model Msg
 page shared request =
     Page.protected.element <|
         \user ->
-            { init = init
+            { init = init request
             , update = update shared.storage
             , view = view user request
             , subscriptions = \_ -> Sub.none
@@ -38,22 +40,38 @@ page shared request =
 
 
 type alias Model =
-    { newIdError : String
+    { item : Item
+    , newIdError : String
     , nameError : String    
-    , item : Item
     , createError : Maybe String
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( { item = { qrid = "", name = "", description = ""}
-      , newIdError = ""
-      , nameError = ""      
-      , createError = Nothing
-      }
-    , Cmd.none 
-    )
+init :  Request -> (Model, Cmd Msg )
+init req =
+    case Dict.get "qrid" req.query of 
+
+    Just val -> 
+            ( { item = { qrid = val, name = "", description = ""}
+              , newIdError = ""
+              , nameError = ""      
+              , createError = Nothing
+              }
+              , Cmd.none 
+            )
+
+    Nothing -> 
+        ( { item = { qrid = "got nothing", name = "", description = ""}
+              , newIdError = ""
+              , nameError = ""      
+              , createError = Nothing
+              }
+              , Cmd.none 
+            )
+
+        
+
+      
 
 
 
@@ -61,12 +79,10 @@ init =
 
 type Msg
     = UpdatedUUID String
-    | UpdatedName String
-    | BlurName
-    | CreateItem
-    | TakePhotoPressed
-    | TypeInPressed
-    | GeneratePressed
+    | UpdatedName String    
+    | PressedScan
+    | PressedGenerate          
+    | Submitted
     | ItemCreated (Result Http.Error Item)
 
 
@@ -80,7 +96,7 @@ update storage msg model  =
                 updatedItem = 
                     { preItem | qrid = idvalue }                                    
             in            
-            ( validateUUID { model |  item = updatedItem } , Cmd.none )
+            ({ model |  item = updatedItem}, Cmd.none )
 
         UpdatedName value ->
            let
@@ -89,41 +105,21 @@ update storage msg model  =
                     { preItem | name = value }                                    
             in            
             ( { model |  item = updatedItem } , Cmd.none )
-
-        BlurName ->
-            ( validateName model , Cmd.none )            
-
-        TakePhotoPressed ->
-            let
-                preItem = model.item
-                updatedItem = 
-                    { preItem | qrid = "scanned" }                    
-            in            
-            ( validateUUID { model |  item = updatedItem }
-            , Cmd.none
+        
+        PressedScan ->            
+            ( model , Browser.Navigation.load "scanner.html?new"
             )
 
-        TypeInPressed ->
-            let
-                preItem = model.item
-                updatedItem = 
-                    { preItem | qrid = "00000000-0000-0000-0000-000000000000" }                    
-            in            
-            ( validateUUID { model |  item = updatedItem } , Cmd.none )
-
-        GeneratePressed ->
+        PressedGenerate ->
             let
                 preItem = model.item
                 updatedItem = 
                     { preItem | qrid = UUID.toString QRID.generate }                    
             in            
-            ( validateUUID { model |  item = updatedItem } , Cmd.none )
+            ( { model |  item = updatedItem } , Cmd.none )
 
-        CreateItem ->
-            ( (validate model )
-            , createItem model.item
-            )
-
+        Submitted -> (model, Cmd.none)
+        
         ItemCreated (Ok item) ->
             ( {model | item = item, createError = Nothing}
             , Browser.Navigation.load (Route.toHref Route.Items)
@@ -201,13 +197,8 @@ view user request model =
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ A.class ""] [ Html.text "Register an item" ]
             , Html.p [ A.class "font-lead"] [ Html.text "Here you can add a new item to your collection"]
-            , Html.div [A.class "my-3", A.id "startButtons"] 
-              [ Html.button [ Events.onClick TakePhotoPressed, A.class "button button-primary"] [ Html.text "Take a photo"]
-              , Html.button [ Events.onClick TypeInPressed,  A.class "button button-primary"] [ Html.text "Type it in"]
-              , Html.button [ Events.onClick GeneratePressed, A.class "button button-secondary"] [ Html.text "Generate"]
-              ]
             , viewError model.createError
-            , viewForm user model            
+            , viewForm user model request           
             , viewFormRegister user model
             ]
          ]
@@ -237,16 +228,19 @@ viewErrorString errorMessage =
     ]
 
 
-viewForm : Auth.User -> Model -> Html Msg
-viewForm user model =
-    Html.form [ A.class "form-div"]
-    [ viewFormUUID user model  
+viewForm : Auth.User -> Model -> Request -> Html Msg 
+viewForm user model request =
+    Html.div [ A.class "form-div"]
+    [ viewFormUUID user model request  
     , viewFormName user model
     , viewFormDesc user model
     ]
 
-viewFormUUID : Auth.User -> Model -> Html Msg
-viewFormUUID user model =
+viewFormUUID : Auth.User -> Model -> Request -> Html Msg
+viewFormUUID user model request =
+    let
+        qrid = ""
+    in
     Html.div [ A.class "form-group", A.id "form-group-uuid"] [
     Html.label [A.class "form-label", A.for "form-uuid-field"][ Html.text "UUID"]
       , Html.span [A.class "form-hint", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
@@ -260,8 +254,12 @@ viewFormUUID user model =
                      , A.value model.item.qrid
                      , Events.onInput UpdatedUUID 
                      ] []
-        , Html.span [A.class "ml-9"][ ] 
+        , Html.span [A.class "ml-9"][ ]         
         ]             
+       , Html.div [A.class "my-3", A.id "startButtons"] 
+              [ Html.button [ Events.onClick PressedScan, A.class "button button-secondary"] [ Html.text "Scan"]              
+              , Html.button [ Events.onClick PressedGenerate, A.class "button button-secondary"] [ Html.text "Generate"]
+              ]
       ]
 
 viewFormUUIDError : Auth.User -> Model -> Html Msg      
@@ -282,7 +280,7 @@ viewFormName user model =
         "Name your item"
         "A friendly name for your item"
         model.nameError
-        (Html.input [A.value model.item.name, Events.onInput UpdatedName, Events.onBlur BlurName,  A.class "Form-input  input-char-27", A.id "form.name", A.type_ "text"][] {- aria and control id-})
+        (Html.input [Events.onInput UpdatedName, A.value model.item.name , A.class "Form-input  input-char-27", A.id "form.name", A.type_ "text"][] {- aria and control id-})
         user 
         model 
     
@@ -304,7 +302,7 @@ viewFormRegister : Auth.User -> Model -> Html Msg
 viewFormRegister user model =
     Html.button [ A.disabled (hasErrors model)
                 , A.class "button button-primary mt-9" 
-                , Events.onClick CreateItem               
+                , Events.onClick Submitted               
                 ]
                 [ Html.text "Register"]
 

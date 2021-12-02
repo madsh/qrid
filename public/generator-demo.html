@@ -104,16 +104,9 @@
                 getElem("loaded").style.removeProperty("display");
                 const params = new URLSearchParams(window.location.search);
                 const qrid = params.get("qrid");
+
                 console.log("generating for : " + qrid)
-                let elems = document.querySelectorAll("input[type=number], input[type=text], textarea");
-                for (let el of elems) {
-                    if (el.id.indexOf("version-") != 0)
-                        el.oninput = redrawQrCode;
-                }
-                elems = document.querySelectorAll("input[type=radio], input[type=checkbox]");
-                for (let el of elems)
-                    el.onchange = redrawQrCode;
-                redrawQrCode(qrid);
+                redrawQrCode("http://qrid.info/" + qrid);
             }
 
             function redrawQrCode(qrid) {
