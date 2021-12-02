@@ -45,7 +45,7 @@ init =
 type Msg
     = ClickedSignOut
     | ClickedScan
-
+    | ClickedGenerate
 
 update : Storage -> Msg -> Model -> ( Model, Cmd Msg )
 update storage msg model =
@@ -58,6 +58,10 @@ update storage msg model =
             ( model
             , Browser.Navigation.load "scanner.html"
             )
+        ClickedGenerate ->
+            ( model
+            , Browser.Navigation.load "generator-demo.html"
+            )
 
 view : Auth.User -> Request -> Model -> View Msg
 view user request _ =
@@ -67,11 +71,11 @@ view user request _ =
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
             [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
             , fromScanner user request
-            , Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]
-            , Html.button [ Attr.class "mx-6", Events.onClick ClickedScan ] [ Html.text "Click to try the scanner!" ]
+            , Html.div[ Attr.class "m-4"][Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]]    
+            , Html.div[ Attr.class "m-4"][Html.button [ Events.onClick ClickedScan ] [ Html.text "Click to try the scanner!" ]]
+            , Html.div[ Attr.class "m-4"][Html.button [ Events.onClick ClickedGenerate ] [ Html.text "Click to try generator" ]]
             ]
-         ]
-        
+         ]        
     }
 
 
@@ -89,5 +93,4 @@ fromScanner _  req =
               , Html.a [ Attr.href ("/item?"++val)][Html.text val]
               ]
           ]
-
         ]

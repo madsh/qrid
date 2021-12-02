@@ -16,7 +16,7 @@ import Url.Builder exposing (absolute)
 
 layout : Auth.User -> List (Html msg) -> List (Html msg)
 layout user children =
-    [   header user "qrid.info pro quo" 
+    [   header user "qrid.info" 
         , Html.main_ [ Attr.class "page-container pt-0", Attr.id "main-content"] children
     ]
 

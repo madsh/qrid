@@ -20,6 +20,11 @@ import Html.Attributes exposing (class)
 import Html.Attributes as A exposing (id, type_)
 import UI
 
+
+import Browser.Navigation
+import Html.Attributes exposing (disabled)
+
+
 page : Shared.Model -> Request.With Params -> Page.With Model Msg
 page shared request =
     Page.protected.element <|
@@ -60,6 +65,7 @@ httpGetItem id =
 type Msg
     = FetchItems 
     | DataRecieved (WebData (List Item))
+    | ClickedCode Item
 
 
 update : String -> Storage -> Msg -> Model -> ( Model, Cmd Msg )
@@ -71,6 +77,8 @@ update id storage msg model =
         DataRecieved response ->
             ( { model | items = response}, Cmd.none)
 
+        ClickedCode item ->
+            ( model, Browser.Navigation.load ("../generator-demo.html?qrid=" ++ item.qrid))
 
 
 -- SUBSCRIPTIONS
@@ -150,6 +158,7 @@ viewItem list =
                      , Html.h1 [][Html.text item.name]
                      , Html.p [ class "font-lead"] [ Html.text item.description]                        
                      , Html.ul [ class "accordion accordion-bordered accordion-multiselectable"][viewBasics item]
+                     , Html.button [ onClick (ClickedCode item), A.class "button button-primary"] [ Html.text "Generate a code"]
                      ]
 
 
