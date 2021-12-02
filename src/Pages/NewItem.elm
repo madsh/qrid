@@ -11,15 +11,14 @@ import Storage exposing (Storage)
 import UI
 import View exposing (View)
 import UUID
-import Debug 
 import Dict exposing (Dict)
-import Url.Parser.Query as Query
 import Domain.QRID as QRID
 import UUID exposing (Error)
 import Http
 import Domain.Item exposing (Item, itemDecoder, itemEncoder)
 import Gen.Route as Route exposing (Route)
 import Browser.Navigation
+import List exposing (length)
 
 
 
@@ -41,9 +40,11 @@ page shared request =
 
 type alias Model =
     { item : Item
-    , newIdError : String
-    , nameError : String    
+    , newIdError : Maybe String
+    , nameError : Maybe String    
+    , descError : Maybe String
     , createError : Maybe String
+    , pageTitle : String
     }
 
 
@@ -52,19 +53,23 @@ init req =
     case Dict.get "qrid" req.query of 
 
     Just val -> 
-            ( { item = { qrid = val, name = "", description = ""}
-              , newIdError = ""
-              , nameError = ""      
-              , createError = Nothing
+            ( validateUUID { item = { qrid = val, name = "", description = ""}
+              , newIdError = Nothing
+              , nameError = Nothing      
+              , createError = Nothing         
+              , descError = Nothing     
+              , pageTitle = "new from tag"
               }
               , Cmd.none 
             )
 
     Nothing -> 
         ( { item = { qrid = "got nothing", name = "", description = ""}
-              , newIdError = ""
-              , nameError = ""      
+              , newIdError = Nothing
+              , nameError = Nothing      
               , createError = Nothing
+              , descError = Nothing
+              , pageTitle = "new no tag yet"
               }
               , Cmd.none 
             )
@@ -79,10 +84,11 @@ init req =
 
 type Msg
     = UpdatedUUID String
-    | UpdatedName String    
+    | UpdatedName String  
+    | UpdatedDesc String  
     | PressedScan
     | PressedGenerate          
-    | Submitted
+    | PressedRegister
     | ItemCreated (Result Http.Error Item)
 
 
@@ -93,6 +99,9 @@ update storage msg model  =
         UpdatedUUID idvalue ->
             let
                 preItem = model.item
+
+                _ = Debug.log "updating UUID to " idvalue
+
                 updatedItem = 
                     { preItem | qrid = idvalue }                                    
             in            
@@ -103,22 +112,33 @@ update storage msg model  =
                 preItem = model.item
                 updatedItem = 
                     { preItem | name = value }                                    
+                -- a change to validate if we all ready have an error
             in            
             ( { model |  item = updatedItem } , Cmd.none )
+
+        UpdatedDesc value ->
+           let
+                preItem = model.item
+                updatedItem = 
+                    { preItem | description = value }                                    
+            in            
+            ( { model |  item = updatedItem } , Cmd.none )
+
         
         PressedScan ->            
             ( model , Browser.Navigation.load "scanner.html?new"
             )
 
         PressedGenerate ->
-            let
+            let                
                 preItem = model.item
                 updatedItem = 
                     { preItem | qrid = UUID.toString QRID.generate }                    
             in            
-            ( { model |  item = updatedItem } , Cmd.none )
+            ( validateUUID { model |  item = updatedItem, pageTitle = "new from generated" } , Cmd.none )
 
-        Submitted -> (model, Cmd.none)
+        PressedRegister -> 
+            ( validate model , if (hasErrors model) then Cmd.none else Cmd.none)
         
         ItemCreated (Ok item) ->
             ( {model | item = item, createError = Nothing}
@@ -130,7 +150,10 @@ update storage msg model  =
 
 validate : Model -> Model
 validate model  = 
-    validateName model
+    model 
+        |> validateUUID 
+        |> validateName
+        --|> validateDesc
 
 
 
@@ -138,22 +161,38 @@ validate model  =
 validateName: Model -> Model
 validateName model = 
     if (String.length model.item.name) < 5 then 
-        { model | nameError = "Names must be longer than 5" }
+        { model | nameError = Just "Names must be longer than 5" }
     else 
-        { model | nameError = ""}
+        { model | nameError = Nothing}
+
+
+validateDesc: Model -> Model
+validateDesc model = 
+    if (String.length model.item.description) < 5 then 
+        { model | descError = Just "Descriptions must be longer than 5" }
+    else 
+        { model | descError = Nothing}
+
 
 validateUUID: Model -> Model
 validateUUID model = 
-     if (String.length model.item.qrid) < 8 then 
-        { model | newIdError = "Ids must be longer than 8" }
-    else 
-        { model | newIdError = ""}
+
+    case QRID.parse model.item.qrid of
+       Ok qrid ->     
+            model
+       Err e -> 
+            let
+               _ = Debug.log "validating : " model.item.qrid
+               _ = Debug.log "          -> " e
+            in
+            { model | newIdError = Just ("bad uuid : " ++ e)}
+
 
 
 hasErrors: Model -> Bool
 hasErrors model = 
-    if (  ((String.length model.newIdError) > 1) 
-       || ((String.length model.nameError) > 1)
+    if (  ( model.newIdError == Nothing )
+       && ( model.nameError == Nothing )
        )
     then 
         True
@@ -191,7 +230,7 @@ buildErrorMessage httpError =
 
 view : Auth.User -> Request -> Model -> View Msg
 view user request model =
-    { title = "qrid - your items"
+    { title = "qrid — " ++ model.pageTitle
     , body =
         UI.layout user [
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
@@ -245,9 +284,9 @@ viewFormUUID user model request =
     Html.label [A.class "form-label", A.for "form-uuid-field"][ Html.text "UUID"]
       , Html.span [A.class "form-hint", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
       , Html.span [A.class "form-hint", A.id "hint2"][ Html.text "A UUID has the form of 88c973e3-f83f-4360-a320-d8844c365130"]
-      , viewFormUUIDError user model
+      , viewFormUUIDError model
       , Html.div [A.class "form-input-wrapper form-input-wrapper-prefeix"]
-        [ Html.div [A.class "form-input-prefix"][ Html.text (if (((String.length model.item.qrid) > 7) && (String.length model.newIdError < 1)) then "✔" else "UUID")]
+        [ Html.div [A.class "form-input-prefix"][ Html.text (if (True) then "✔" else "UUID")]
         , Html.input [ A.id "form-uuid-field"
                      , A.name "uuid-field"                     
                      , A.class "form-input input-width-xl"
@@ -262,16 +301,17 @@ viewFormUUID user model request =
               ]
       ]
 
-viewFormUUIDError : Auth.User -> Model -> Html Msg      
-viewFormUUIDError _ model = 
-    if (True) 
-    then
-        Html.span [A.class "form-error-message", A.id "form-group-uuid-error"]
-        [ Html.span [A.class "sr-only"][Html.text "Error:"]
-        , Html.text model.newIdError 
-        ]
-    else 
-        Html.div [][]
+viewFormUUIDError : Model -> Html Msg      
+viewFormUUIDError model =     
+    case model.newIdError of
+        Just error -> 
+            Html.span [A.class "form-error-message", A.id "form-group-uuid-error"]
+            [ Html.span [A.class "sr-only"][Html.text "Error:"]
+            , Html.text error 
+            ]
+
+        Nothing -> Html.text ""
+    
 
 viewFormName : Auth.User -> Model -> Html Msg
 viewFormName user model =
@@ -283,6 +323,7 @@ viewFormName user model =
         (Html.input [Events.onInput UpdatedName, A.value model.item.name , A.class "Form-input  input-char-27", A.id "form.name", A.type_ "text"][] {- aria and control id-})
         user 
         model 
+        
     
 viewFormDesc : Auth.User -> Model -> Html Msg    
 viewFormDesc user model = 
@@ -290,8 +331,8 @@ viewFormDesc user model =
         "desc"
         "Description"
         "A few more words to describe the item you are registering"
-        ""
-        (Html.textarea [A.class "Form-input input-char-27", A.id "form.desc", A.rows 5][] {- aria and control id-})
+        model.descError
+        (Html.textarea [Events.onInput UpdatedDesc, A.class "Form-input input-char-27", A.id "form.desc", A.rows 5][] {- aria and control id-})
         user 
         model
 
@@ -300,21 +341,32 @@ viewFormDesc user model =
 
 viewFormRegister : Auth.User -> Model -> Html Msg
 viewFormRegister user model =
-    Html.button [ A.disabled (hasErrors model)
-                , A.class "button button-primary mt-9" 
-                , Events.onClick Submitted               
+    Html.button [ Events.onClick PressedRegister               
+                --, A.disabled (hasErrors model)
+                , A.class "button button-primary mt-9"              
                 ]
                 [ Html.text "Register"]
 
 
-formField : String -> String -> String -> String -> Html Msg -> Auth.User -> Model -> Html Msg 
+formField : String -> String -> String -> Maybe String -> Html Msg -> Auth.User -> Model -> Html Msg 
 formField id label hint error html user model   =
+
     Html.div [ A.class "form-group", A.id ("form-group" ++ id)]
     [ Html.label [A.class "form-label", A.for ("form-"++ id ++ "-field")][ Html.text label]
     , Html.span [A.class "form-hint", A.id ("form-"++id++"-hint")][ Html.text hint]
-    , Html.span [A.class "form-error-message", A.id "form-group-name-error" ]
-      [ Html.span [ A.class "sr-only"] [ Html.text "Error:"]
-      , Html.text error
-      ] 
+    , viewFormFieldError error
     , html
     ]
+
+
+viewFormFieldError : Maybe String -> Html Msg      
+viewFormFieldError error = 
+    case error of 
+        Nothing -> 
+            Html.text ""
+
+        Just msg -> 
+            Html.span [A.class "form-error-message", A.id "form-group-name-error" ]
+            [ Html.span [ A.class "sr-only"] [ Html.text "Error:"]
+            , Html.text msg
+            ]
