@@ -57,7 +57,7 @@ headerSolution =
             -- Html.a [ Attr.href "/", Attr.title appName][ Html.text appName]
             --, Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href "scanner.html"][ Html.text "Scan1"] 
               Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Items"]
-            , Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.NewItem)][Html.text "Add"] 
+            , Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Add"] 
             , Html.a [ Attr.class "mynav displayheading-2 text-negative mr-4", Attr.href (Route.toHref Route.Settings)][Html.text "Settings"]                                                             
             ]
             ]      
