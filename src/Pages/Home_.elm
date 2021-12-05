@@ -71,9 +71,9 @@ view user request _ =
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 
             [ Html.h1 [ Attr.class ""] [ Html.text ("Hello, " ++ user.name ++ "!") ]
             , fromScanner user request
-            , Html.div[ Attr.class "m-4"][Html.button [ Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]]    
-            , Html.div[ Attr.class "m-4"][Html.button [ Events.onClick ClickedScan ] [ Html.text "Click to try the scanner!" ]]
-            , Html.div[ Attr.class "m-4"][Html.button [ Events.onClick ClickedGenerate ] [ Html.text "Click to try generator" ]]
+            , Html.div[ Attr.class "m-4"][Html.button [ Attr.class "button button-primary",Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]]    
+            , Html.div[ Attr.class "m-4"][Html.button [ Attr.class "button button-primary", Events.onClick ClickedScan ] [ Html.text "Click to try the scanner!" ]]
+            , Html.div[ Attr.class "m-4"][Html.button [ Attr.class "button button-primary", Events.onClick ClickedGenerate ] [ Html.text "Click to try generator" ]]
             ]
          ]        
     }

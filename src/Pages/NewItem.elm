@@ -353,7 +353,7 @@ viewPageSucces maybeSucces =
             Html.div[A.class "alert alert-success"]
             [ Html.div [A.class "alert-body"] 
               [ Html.p [A.class "alert-heading"] [Html.text "Your item was saved on our server" ]
-              , Html.p [A.class "alert-text"] [Html.text ("Error: " ++ error)]
+              , Html.p [A.class "alert-text"] [Html.text ("Success: " ++ error)]
               ]
            ]
 

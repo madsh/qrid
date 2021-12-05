@@ -16,61 +16,15 @@
       "description": "et dejligt ur"
     },
     {
-      "qrid": "a9fbd2a5-2344-4546-a43d-2dd4f83df9d9",
-      "name": "bender-no-desc"
-    },
-    {
-      "id": "3f73edbc-4d69-57f6-8e6f-fa49d06a1234",
-      "qrid": "3f73edbc-4d69-57f6-8e6f-fa49d06a1234",
-      "name": "1345",
-      "description": ""
-    },
-    {
-      "id": "00000000-0000-0000-0000-0000000000012",
-      "qrid": "00000000-0000-0000-0000-0000000000012",
-      "name": "2",
-      "description": ""
-    },
-    {
-      "id": "tap here to type in, or click generate below",
-      "qrid": "tap here to type in, or click generate below",
-      "name": "1",
-      "description": ""
-    },
-    {
-      "id": "00000000-1234-0000-0000-000000000000",
-      "qrid": "00000000-1234-0000-0000-000000000000",
-      "name": "",
+      "id": "00000000-0000-0000-0000-00000001234",
+      "qrid": "00000000-0000-0000-0000-00000001234",
+      "name": "emils første",
       "description": ""
     },
     {
       "id": "3f73edbc-4d69-57f6-8e6f-fa49d06ab21c",
       "qrid": "3f73edbc-4d69-57f6-8e6f-fa49d06ab21c",
-      "name": "123465",
-      "description": ""
-    },
-    {
-      "id": "3f73edbc-4d69-57f6-8e6f-fa49d06a",
-      "qrid": "3f73edbc-4d69-57f6-8e6f-fa49d06a",
-      "name": "123465",
-      "description": ""
-    },
-    {
-      "id": "3f73edbc-4d69-57f6-8e6f-fa49d06ab21e",
-      "qrid": "3f73edbc-4d69-57f6-8e6f-fa49d06ab21e",
-      "name": "455656",
-      "description": ""
-    },
-    {
-      "id": "123",
-      "qrid": "123",
-      "name": "454545",
-      "description": ""
-    },
-    {
-      "id": "3f73edbc-4d69-676767",
-      "qrid": "3f73edbc-4d69-676767",
-      "name": "12345678",
+      "name": "emils anden",
       "description": ""
     }
   ]

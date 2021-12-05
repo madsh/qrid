@@ -90,13 +90,13 @@ view model =
 viewForm : Model -> Html Msg
 viewForm model =
     Html.form [ Attr.class "form-group signin-form", Events.onSubmit SubmittedSignInForm]
-    [ Html.label [ Attr.class "form.label", Attr.for "signin-form"][ Html.text "Login to register og manage your items"]
+    [ Html.label [ Attr.class "form.label", Attr.for "signin-form"][ Html.text "Login to manage your items"]
     , Html.span [Attr.class "form-hint", Attr.id "signin-form"][ Html.text "Use your UUID :-)"]
     , Html.span [Attr.class "form-error-message", Attr.id "signin-form-error"]
         [ Html.span[Attr.class "sr-only"][Html.text "Error:"
         , Html.text "UUID is not registered as a user"
         ]
-    , Html.input [ Attr.class "form-input"
+    , Html.input [ Attr.class "form-input  input-width-xl"
                  , Attr.required True
                  , Attr.id "sign-in"
                  , Attr.value model.name
