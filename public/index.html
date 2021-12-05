@@ -10,6 +10,9 @@
     <link rel="preload" href="fonts/IBMPlexSans-Bold.woff" as="font" crossorigin="">
     <link rel="preload" href="fonts/IBMPlexSans-Regular.woff" as="font" crossorigin="">
     <link rel="preload" href="fonts/IBMPlexSans-SemiBold.woff" as="font" crossorigin="">
+    <script type="application/javascript" src="./qrcodegen.js"></script>
+
+
 
     <style>
         .mynav {
@@ -62,6 +65,24 @@
     <script src="/dist/elm.js"></script>
     <script src="/main.js"></script>
     <script src="/dkfds.js"></script>
+
+    <script>
+        function QrCode(content) {
+            const ecl = qrcodegen.QrCode.Ecc.MEDIUM;
+            const segs = qrcodegen.QrSegment.makeSegments(content);
+            const qr = qrcodegen.QrCode.encodeSegments(segs, ecl, 2, 20, 2, true);
+            const code = toSvgString(qr, 4, "#FFFFFF", "#000000");
+            const viewBox = / viewBox="([^"]*)"/.exec(code)[1];
+            const pathD = / d="([^"]*)"/.exec(code)[1];
+            svg.setAttribute("viewBox", viewBox);
+            svg.querySelector("path").setAttribute("d", pathD);
+            svg.querySelector("rect").setAttribute("fill", lightColor);
+            svg.querySelector("path").setAttribute("fill", darkColor);
+            svg.style.removeProperty("display");
+            console.log("Returning a qr: " + code)
+            return code;
+        }
+    </script>
 </body>
 
 </html>

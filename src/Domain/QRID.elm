@@ -1,4 +1,4 @@
-module Domain.QRID exposing (generate, parse)
+module Domain.QRID exposing (generate, parse, toString)
 
 
 import UUID exposing (UUID, Error)
@@ -16,3 +16,6 @@ parse input =
     else 
         Ok input
 
+
+toString : UUID -> String
+toString id = UUID.toString id
