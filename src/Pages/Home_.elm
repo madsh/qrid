@@ -65,7 +65,7 @@ update storage msg model =
 
 view : Auth.User -> Request -> Model -> View Msg
 view user request _ =
-    { title = "Homepage"
+    { title = "Welcome to qrid"
     , body =
         UI.layout user [
             Html.main_ [ Attr.class "container page-container", Attr.id "main-content"] 

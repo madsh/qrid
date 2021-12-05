@@ -75,7 +75,7 @@ subscriptions model =
 
 view : Model -> View Msg
 view model =
-    { title = "Sign in"
+    { title = "qrid - sign in"
     , body = 
         [ Html.header [][]
         , Html.main_ [ Attr.class "container page-container", Attr.id "main-content"]
