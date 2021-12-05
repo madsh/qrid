@@ -7,7 +7,7 @@ import Html.Attributes as A
 import Page
 import Request exposing (Request)
 import Shared
-import Storage exposing (Storage)
+import Storage as Storage exposing (Storage)
 import UI
 import View exposing (View)
 import UUID
@@ -15,7 +15,7 @@ import Dict exposing (Dict)
 import Domain.QRID as QRID
 import UUID exposing (Error)
 import Http
-import Domain.Item exposing (Item, itemDecoder, itemEncoder)
+import Domain.Item as Item exposing (Item)
 import Gen.Route as Route exposing (Route)
 import Browser.Navigation
 import List exposing (length)
@@ -27,7 +27,7 @@ page : Shared.Model -> Request -> Page.With Model Msg
 page shared request =
     Page.protected.element <|
         \user -> { init = init request
-        , update = update
+        , update = update shared
         , view = view user request
         , subscriptions = subscriptions
         }
@@ -109,8 +109,8 @@ type Msg
     
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model  =
+update : Shared.Model -> Msg -> Model -> ( Model, Cmd Msg )
+update shared msg model  =
     case msg of
         UpdatedUUID idvalue ->
            let
@@ -170,7 +170,8 @@ update msg model  =
 
         PressedRegister -> 
             ( (validate {model | showErrors = True})
-            , if (model.ready) then (storeItemRemote model) else Cmd.none                            
+            --, if (model.ready) then (storeItemRemote model) else Cmd.none {- store on server -}                           
+            , if (model.ready) then (Storage.addItem model.item shared.storage) else Cmd.none                            
             )
 
 
@@ -213,8 +214,8 @@ storeItemRemote: Model -> Cmd Msg
 storeItemRemote model = 
     Http.post 
       { url = "http://localhost:3000/items"
-      , body = Http.jsonBody (itemEncoder model.item)
-      , expect = Http.expectJson ItemCreated itemDecoder      
+      , body = Http.jsonBody (Item.encoder model.item)
+      , expect = Http.expectJson ItemCreated Item.decoder
     }    
 
 

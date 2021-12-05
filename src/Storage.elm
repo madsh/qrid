@@ -1,6 +1,6 @@
 port module Storage exposing
     ( Storage, load
-    , signIn, signOut
+    , signIn, signOut, addItem
     , fromJson
     )
 
@@ -12,43 +12,53 @@ port module Storage exposing
 -}
 
 import Domain.User as User exposing (User)
-import Json.Decode as Json
+import Domain.Item as Item exposing (Item) 
+import Json.Decode as Decode
 import Json.Encode as Encode
 
 
 type alias Storage =
     { user : Maybe User
+    , collection : List Item
     }
 
+type Msg = ItemStored
 
-fromJson : Json.Value -> Storage
-fromJson json =
+
+fromJson : Decode.Value -> Storage
+fromJson json = 
     json
-        |> Json.decodeValue decoder
+        |> Decode.decodeValue decoder        
         |> Result.withDefault init
 
+
+toJson : Storage -> Decode.Value
+toJson storage = Encode.object 
+    [ ("user"
+      , storage.user 
+            |> Maybe.map User.encode
+            |> Maybe.withDefault Encode.null
+      )
+    , ( "collection"
+      , storage.collection
+            |> Encode.list Item.encoder
+          )
+    ]
 
 init : Storage
 init =
     { user = Nothing
+    , collection = []
     }
 
 
-decoder : Json.Decoder Storage
-decoder =
-    Json.map Storage
-        (Json.field "user" (Json.maybe User.decoder))
+decoder : Decode.Decoder Storage
+decoder = Decode.map2 Storage 
+            (Decode.field "user" (Decode.maybe User.decoder))
+            (Decode.field "collection" (Decode.list Item.decoder))
 
+    
 
-save : Storage -> Json.Value
-save storage =
-    Encode.object
-        [ ( "user"
-          , storage.user
-                |> Maybe.map User.encode
-                |> Maybe.withDefault Encode.null
-          )
-        ]
 
 
 
@@ -64,17 +74,19 @@ signOut : Storage -> Cmd msg
 signOut storage =
     saveToLocalStorage { storage | user = Nothing }
 
-
+addItem : Item -> Storage -> Cmd msg
+addItem item storage =
+    saveToLocalStorage { storage | collection = item :: storage.collection}
 
 -- PORTS
 
 
 saveToLocalStorage : Storage -> Cmd msg
 saveToLocalStorage =
-    save >> save_
+    toJson >> save_
 
 
-port save_ : Json.Value -> Cmd msg
+port save_ : Decode.Value -> Cmd msg
 
 
 load : (Storage -> msg) -> Sub msg
@@ -82,4 +94,4 @@ load fromStorage =
     load_ (fromJson >> fromStorage)
 
 
-port load_ : (Json.Value -> msg) -> Sub msg
+port load_ : (Decode.Value -> msg) -> Sub msg

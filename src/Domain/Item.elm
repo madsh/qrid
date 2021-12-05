@@ -1,4 +1,4 @@
-module Domain.Item exposing (Item, ItemId, itemDecoder, itemsDecoder, itemEncoder) 
+module Domain.Item exposing (Item, ItemId, decoder, encoder, itemsDecoder) 
 
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required, optional)
@@ -13,10 +13,10 @@ type ItemId
     =  ItemId Int
 
 itemsDecoder : Decoder (List Item)
-itemsDecoder = list itemDecoder          
+itemsDecoder = list decoder          
 
-itemDecoder : Decoder Item 
-itemDecoder = 
+decoder : Decoder Item 
+decoder = 
     Decode.succeed Item        
         |> required "qrid" string
         |> required "name" string        
@@ -24,8 +24,8 @@ itemDecoder =
 
 
 
-itemEncoder : Item -> Encode.Value
-itemEncoder item =
+encoder : Item -> Encode.Value
+encoder item =
     Encode.object
         [ ( "id", Encode.string item.qrid )
         , ( "qrid", Encode.string item.qrid )

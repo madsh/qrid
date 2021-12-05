@@ -6,7 +6,7 @@ import Html exposing (..)
 import Html.Events exposing (onClick)
 import Http
 import Json.Decode as Decode
-import Domain.Item exposing (Item, itemsDecoder)
+import Domain.Item as Item exposing (Item)
 import RemoteData exposing (RemoteData, WebData)
 
 
@@ -66,7 +66,7 @@ httpGetItems : Cmd Msg
 httpGetItems = 
     Http.get 
         { url = "http://localhost:3000/items"
-        , expect = itemsDecoder
+        , expect = Item.itemsDecoder
             |> Http.expectJson (RemoteData.fromResult >> DataRecieved )
         }
 
