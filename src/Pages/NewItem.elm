@@ -121,7 +121,7 @@ update msg model  =
                     then (Manual)
                     else (model.newIdSource)
 
-                _ = Debug.log "updating UUID to " idvalue
+                --_ = Debug.log "updating UUID to " idvalue
                 updatedItem = 
                     { preItem | qrid = idvalue }                                    
             in            
@@ -140,7 +140,7 @@ update msg model  =
                 updatedItem = 
                     { preItem | qrid = newValue }   
 
-                _ = Debug.log "Focusing and updating source to Manual :" model.item.qrid
+                --_ = Debug.log "Focusing and updating source to Manual :" model.item.qrid
                 
             in            
             ({ model |  item = updatedItem, newIdSource = Manual}, Cmd.none )
@@ -152,7 +152,7 @@ update msg model  =
                 updatedItem = 
                     { preItem | qrid = UUID.toString QRID.generate }                    
 
-                _ = Debug.log "Generated  "
+                --_ = Debug.log "Generated  "
             in            
             ( { model |  item = updatedItem, newIdSource = Generated } , Cmd.none )
 
@@ -162,7 +162,7 @@ update msg model  =
                 updatedItem = 
                     { preItem | name = value }                                    
 
-                _ = Debug.log "Updating Name to : " value
+                --_ = Debug.log "Updating Name to : " value
 
                 -- a change to validate if we all ready have an error
             in            
@@ -198,7 +198,7 @@ validate model =
 
         ready = if (nameEr == Nothing) then True else False                 
 
-        _ = Debug.log ("Validated (is ready) " ++ model.item.qrid) ready
+        --_ = Debug.log ("Validated (is ready) " ++ model.item.qrid) ready
     in 
     { model |
         nameError = nameEr
@@ -211,9 +211,6 @@ validate model =
 
 storeItemRemote: Model -> Cmd Msg 
 storeItemRemote model = 
-    let
-        _ = Debug.log "Storing  "  model.item.qrid
-    in
     Http.post 
       { url = "http://localhost:3000/items"
       , body = Http.jsonBody (itemEncoder model.item)
@@ -282,9 +279,6 @@ viewForm user model request =
 
 viewFormUUID : Auth.User -> Model -> Request -> Html Msg
 viewFormUUID user model request =
-    let
-        qrid = ""
-    in
     Html.div [ A.class "form-group", A.id "form-uuid-group"] [
     Html.label [A.class "form-label", A.for "form-uuid-input"][ Html.text "UUID"]
       , Html.span [A.class "form-hint", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
