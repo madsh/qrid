@@ -54,11 +54,7 @@ headerSolution =
     Html.div [ Attr.class "solution-header"][
         Html.div [Attr.class "solution-header-inner container"]
             [ Html.div [Attr.class "d-flex align-items-center"]
-            [ 
-            -- Html.a [ Attr.href "/", Attr.title appName][ Html.text appName]
-            --, Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href "scanner.html"][ Html.text "Scan1"] 
-              Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Items"]
-            , Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.LocalItems)][Html.text "Local Items"]
+            [ Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Items"]            
             , Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.NewItem)][Html.text "Add"] 
             , Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.Settings)][Html.text "Settings"]                                                                                     
             ]

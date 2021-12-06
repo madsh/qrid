@@ -26,7 +26,7 @@ page : Shared.Model -> Request -> Page.With Model Msg
 page shared request =
     Page.protected.element <|
         \user ->
-            { init = init
+            { init = init shared
             , update = update shared.storage
             , view = view user request
             , subscriptions = \_ -> Sub.none
@@ -34,13 +34,17 @@ page shared request =
 
 -- MODEL
 type alias Model =
-    { items : WebData (List Item) }
+    { items : WebData (List Item)
+    , localItems : (List Item) }
 
 -- INIT
 
-init : ( Model, Cmd Msg )
-init =
-    ( { items = RemoteData.Loading}, httpGetItems )
+init : Shared.Model -> ( Model, Cmd Msg )
+init shared =
+    ( { items = RemoteData.Loading
+      , localItems = shared.storage.collection
+      }
+      , httpGetItems )
 
 -- UPDATE
 
@@ -100,7 +104,16 @@ view user request model =
         UI.layout user   [ 
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ class ""] [ Html.text "Your Items" ]
-            , Html.p [ class "font-lead"] [ Html.text "Here is what you have registered so far"]                        
+            , Html.p [ class "font-lead"] [ Html.text "Items are stored on your device, if you have "
+                                          , Html.a [][Html.text "no plan. "]
+                                          , Html.text "If you have "
+                                          , Html.a [][Html.text "a plan "]
+                                          , Html.text " your items are stored either on our servers or in your cloud provider"
+                                          ] 
+            , Html.h2 [][Html.text "Items on your device"]                                                                 
+            , viewLocalItems model.localItems
+
+            , Html.h2 [][Html.text "Items stored remotely"]                                                                 
             , viewForm user model
             , viewItemsOrError model            
             ]
@@ -109,10 +122,28 @@ view user request model =
     }
 
 
+
+viewLocalItems : List Item -> Html Msg
+viewLocalItems items = 
+    Html.div[class "table--reponsive-scroll"]
+    [ Html.table [class "table table--compact"] 
+      [ Html.thead []
+        [ Html.tr[]
+          [ Html.th [][Html.text "Name"]
+          , Html.th [][Html.text "Description"]          
+          , Html.th [][]          ]
+        ]
+      , Html.tbody [](List.map viewTableRow items)
+      ]
+    ]
+
+
+
+
 viewForm : Auth.User -> Model -> Html Msg
 viewForm user model = 
     Html.div [class "form-group search mb-6"][
-        Html.input [class "form-input", A.id "searchTable", A.type_ "search"][], 
+        Html.input [class "form-input  input-width-xl", A.id "searchTable", A.type_ "search"][], 
         Html.button [class "button button-search", onClick FetchItems] [Html.text "Search"]
     ]
 

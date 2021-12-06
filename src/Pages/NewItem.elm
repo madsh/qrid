@@ -168,10 +168,17 @@ update shared msg model  =
             in            
             ( { model |  item = updatedItem } , Cmd.none )     
 
+        {-
+            Plan is to always store locally.. maybe just one or rolling ten. 
+            Try to store remote, notify on error, but keep going... latest save to remote win... keep track... allow merge two latest...
+            When storing try to sync.... and a seperate sync on settings
+        -}
+
+        
         PressedRegister -> 
             ( (validate {model | showErrors = True})
             --, if (model.ready) then (storeItemRemote model) else Cmd.none {- store on server -}                           
-            , if (model.ready) then (Storage.addItem model.item shared.storage) else Cmd.none                            
+            , if (model.ready) then ((Storage.addItem model.item shared.storage)) else Cmd.none                            
             )
 
 
@@ -215,9 +222,11 @@ storeItemRemote model =
     Http.post 
       { url = "http://localhost:3000/items"
       , body = Http.jsonBody (Item.encoder model.item)
-      , expect = Http.expectJson ItemCreated Item.decoder
+      , expect       
+      = Http.expectJson ItemCreated Item.decoder
     }    
 
+{- add a Store Item funktion-}
 
 
 buildHttpErrorMessage : Http.Error -> String
