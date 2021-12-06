@@ -80,7 +80,7 @@ init req =
             )
 
     Nothing -> 
-        ( { item = { qrid = "tap here to type in, or click generate below", name = "", description = ""}
+        ( { item = { qrid = "tap here to type in, or click above", name = "", description = ""}
               , ready = False 
               , newIdError = Nothing
               , newIdSource = Undecided
@@ -104,8 +104,11 @@ type Msg
     | FocusedUUID
     | UpdatedName String
     | PressedGenerate
+    | PressedScan
+    | PressedRegisterLocally    
     | PressedRegister
-    | ItemCreated (Result Http.Error Item)
+    | PressedValidate
+    | ItemCreatedRemotely (Result Http.Error Item)
     
 
 
@@ -156,6 +159,9 @@ update shared msg model  =
             in            
             ( { model |  item = updatedItem, newIdSource = Generated } , Cmd.none )
 
+        PressedScan ->
+            (model, Cmd.none)
+
         UpdatedName value ->
            let
                 preItem = model.item
@@ -174,22 +180,29 @@ update shared msg model  =
             When storing try to sync.... and a seperate sync on settings
         -}
 
+        PressedValidate -> 
+            ( (validate {model | showErrors = True})
+            , Cmd.none 
+            )
         
         PressedRegister -> 
+            ( (validate {model | showErrors = True})
+            , if (model.ready) then (storeItemRemote model) else Cmd.none 
+            )
+
+        PressedRegisterLocally -> 
             ( (validate {model | showErrors = True})
             --, if (model.ready) then (storeItemRemote model) else Cmd.none {- store on server -}                           
             , if (model.ready) then ((Storage.addItem model.item shared.storage)) else Cmd.none                            
             )
 
-
-
-        ItemCreated (Ok item) ->
+        ItemCreatedRemotely (Ok item) ->
             ( {model | item = item, createError = Nothing, createSucces = Just ("Saved item " ++ item.qrid)}
               , Cmd.none
         --    , Browser.Navigation.load (Route.toHref Route.Items)
             )
 
-        ItemCreated (Err error) ->
+        ItemCreatedRemotely (Err error) ->
             ( {model | createError = Just (buildHttpErrorMessage error), createSucces = Nothing}, Cmd.none)    
 
 
@@ -223,10 +236,10 @@ storeItemRemote model =
       { url = "http://localhost:3000/items"
       , body = Http.jsonBody (Item.encoder model.item)
       , expect       
-      = Http.expectJson ItemCreated Item.decoder
+      = Http.expectJson ItemCreatedRemotely Item.decoder
     }    
 
-{- add a Store Item funktion-}
+{- add a Store -}
 
 
 buildHttpErrorMessage : Http.Error -> String
@@ -265,13 +278,12 @@ view user request model =
     , body =
         UI.layout user [
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
-            [ Html.h1 [ A.class ""] [ Html.text "Register an item" ]
-            , Html.p [ A.class "font-lead"] [ Html.text "Here you can add a new item to your collection"]
-            , if (model.showErrors) then (Html.text "Showing Errors") else (Html.text "Not showing Errors")
+            [ Html.h1 [ A.class ""] [ Html.text "Register an item" ]            
             , viewPageSucces model.createSucces
             , viewPageError model.createError
             , viewForm user model request           
             --, viewFormRegister user model
+            , Html.div[A.class "mt-6"][Html.text (if (model.showErrors) then "Showing Errors" else "Not showing Errors")]
             ]
          ]
         
@@ -281,36 +293,33 @@ view user request model =
 viewForm : Auth.User -> Model -> Request -> Html Msg 
 viewForm user model request =
     Html.div [ A.class "form-div"]
-    [ viewFormUUID user model request  
-    , viewFormName user model
+    [ viewFormName user model
+    , viewFormUUID user model request  
+    
     --, viewFormDesc user model
+    , Html.button [ Events.onClick PressedValidate, A.class "button button-secondary mt-9"][ Html.text "Validate"]
+    , Html.button [ Events.onClick PressedRegisterLocally, A.class "button button-secondary mt-9"][ Html.text "Register Locally"]
     , Html.button [ Events.onClick PressedRegister, A.class "button button-primary mt-9"][ Html.text "Register"]
     ]    
 
 viewFormUUID : Auth.User -> Model -> Request -> Html Msg
 viewFormUUID user model request =
-    Html.div [ A.class "form-group", A.id "form-uuid-group"] [
-    Html.label [A.class "form-label", A.for "form-uuid-input"][ Html.text "UUID"]
-      , Html.span [A.class "form-hint", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
-      --, Html.span [A.class "form-hint", A.id "hint2"][ Html.text "A UUID has the form of 88c973e3-f83f-4360-a320-d8844c365130"]
-      --, viewFormUUIDError model
-      , Html.div [A.class "form-input-wrapper form-input-wrapper-prefeix"]
-        [ Html.div [A.class "form-input-prefix"][ Html.text (if (True) then "✔" else "UUID")]
-        , Html.input [ A.id "form-uuid-input"
+    Html.div [ A.class "form-group mt-9", A.id "form-uuid-group"] 
+    [ Html.label [A.class "form-label", A.for "form-uuid-input"][ Html.text "UUID"]
+    , Html.span [A.class "form-hint mb-3", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
+    --, Html.span [A.class "form-hint", A.id "hint2"][ Html.text "A UUID has the form of 88c973e3-f83f-4360-a320-d8844c365130"]
+    --, viewFormUUIDError model
+    , Html.button [ Events.onClick PressedGenerate, A.class "button button-secondary"] [ Html.text "Generate"]              
+    , Html.button [ Events.onClick PressedScan, A.class "button button-secondary"] [ Html.text "Scan"]                            
+    , Html.input [ A.id "form-uuid-input"
                      , A.name "uuid-field"                     
-                     , A.class "form-input input-width-xl"
+                     , A.class "form-input input-width-xl mt-6"
                      , A.value model.item.qrid
                      , Events.onInput UpdatedUUID 
                      , Events.onFocus FocusedUUID
-                     ] []
-        , Html.span [A.class "ml-9"][ ]         
-        ]             
-       , Html.div [A.class "my-3", A.id "startButtons"] 
-              [ -- Html.button [ Events.onClick PressedScan, A.class "button button-secondary"] [ Html.text "Scan"]              
-              Html.button [ Events.onClick PressedGenerate, A.class "button button-secondary"] [ Html.text "Generate"]
-              ]
-      ]    
-
+                     ] []       
+    ] 
+     
 
 viewFormName : Auth.User -> Model -> Html Msg
 viewFormName user model =
@@ -360,5 +369,6 @@ viewPageSucces maybeSucces =
               , Html.p [A.class "alert-text"] [Html.text ("Success: " ++ error)]
               ]
            ]
+
 
 
