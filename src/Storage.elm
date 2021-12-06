@@ -1,6 +1,6 @@
 port module Storage exposing
     ( Storage, load
-    , signIn, signOut, addItem
+    , signIn, signOut, addItem, getItemsAsDict
     , fromJson
     )
 
@@ -15,6 +15,7 @@ import Domain.User as User exposing (User)
 import Domain.Item as Item exposing (Item) 
 import Json.Decode as Decode
 import Json.Encode as Encode
+import Dict
 
 
 type alias Storage =
@@ -77,6 +78,12 @@ signOut storage =
 addItem : Item -> Storage -> Cmd msg
 addItem item storage =
     saveToLocalStorage { storage | collection = item :: storage.collection}
+ 
+
+getItemsAsDict : (Dict.Dict String Item)
+getItemsAsDict = Dict.fromList 
+    [ ("123456", (Item "123456" "My first dict item" "and its description") ) 
+    ]
 
 -- PORTS
 

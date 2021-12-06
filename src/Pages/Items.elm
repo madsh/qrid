@@ -69,6 +69,7 @@ httpGetItems =
         , expect = Item.itemsDecoder
             |> Http.expectJson (RemoteData.fromResult >> DataRecieved )
         }
+        
 
 buildErrorMessage : Http.Error -> String
 buildErrorMessage httpError =

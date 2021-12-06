@@ -9,6 +9,7 @@ import Auth
 import Shared
 import Request exposing (Request)
 import Url.Builder exposing (absolute)
+import Html exposing (Attribute)
 
 
 
@@ -42,7 +43,7 @@ headerPortal user portalName =
         Html.div [Attr.class "ikkeportal-header-inner container"]
         [ Html.div [Attr.id "topbox"]
           [ Html.div [Attr.class "topleft"][Html.a [Attr.class "mynav",Attr.href (Route.toHref Route.Home_)][Html.text portalName]]
-          , Html.div [Attr.class "topcenter"][Html.text "-"]    
+          , Html.div [Attr.class "topcenter"][Html.text "*"]    
           , Html.div [Attr.class "topright"][Html.text user.name]    
           ]        
         ]
@@ -56,9 +57,9 @@ headerSolution =
             [ 
             -- Html.a [ Attr.href "/", Attr.title appName][ Html.text appName]
             --, Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href "scanner.html"][ Html.text "Scan1"] 
-              Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Items"]
-            , Html.a [ Attr.class "mynav displayheading-2 mr-4", Attr.href (Route.toHref Route.NewItem)][Html.text "Add"] 
-            , Html.a [ Attr.class "mynav displayheading-2 text-negative mr-4", Attr.href (Route.toHref Route.Settings)][Html.text "Settings"]                                                             
+              Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.Items)][Html.text "Items"]
+            , Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.NewItem)][Html.text "Add"] 
+            , Html.a [ Attr.class "mynav mr-4", Attr.href (Route.toHref Route.Settings)][Html.text "Settings"]                                                                                     
             ]
             ]      
         ] 

@@ -56,7 +56,7 @@ update storage msg model =
 
         SubmittedSignInForm ->
             ( model
-            , Storage.signIn { name = model.name } storage
+            , Storage.signIn { name = model.name, userRemote = False } storage
             )
 
 

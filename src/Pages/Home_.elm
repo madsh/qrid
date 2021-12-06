@@ -18,7 +18,7 @@ page : Shared.Model -> Request -> Page.With Model Msg
 page shared request =
     Page.protected.element <|
         \user ->
-            { init = init
+            { init = init shared.storage
             , update = update shared.storage
             , view = view user request
             , subscriptions = \_ -> Sub.none
@@ -30,12 +30,14 @@ page shared request =
 
 
 type alias Model =
-    {}
+    {
+        
+    }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( {}, Cmd.none )
+init : Storage -> ( Model, Cmd Msg )
+init store =
+    ( { }, Cmd.none )
 
 
 
@@ -94,3 +96,5 @@ fromScanner _  req =
               ]
           ]
         ]
+
+
