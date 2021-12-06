@@ -1,6 +1,6 @@
 port module Storage exposing
     ( Storage, load
-    , signIn, signOut, addItem, getItemsAsDict
+    , signIn, signOut, addItem, deleteAllItems
     , fromJson
     )
 
@@ -79,6 +79,9 @@ addItem : Item -> Storage -> Cmd msg
 addItem item storage =
     saveToLocalStorage { storage | collection = item :: storage.collection}
  
+deleteAllItems : Storage -> Cmd msg
+deleteAllItems storage = 
+    saveToLocalStorage { storage | collection = []}
 
 getItemsAsDict : (Dict.Dict String Item)
 getItemsAsDict = Dict.fromList 

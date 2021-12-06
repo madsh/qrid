@@ -12,6 +12,7 @@ import UI
 import Html exposing (Html)
 import Html.Events as Events
 import Html.Attributes as A
+import Storage exposing (Storage)
 
 
 
@@ -20,8 +21,8 @@ page : Shared.Model -> Request -> Page.With Model Msg
 page shared request =
     Page.protected.element <|
         \user -> { init = init 
-        , update = update 
-        , view = view user request
+        , update = update shared
+        , view = view user shared request
         , subscriptions = subscriptions
         }
 
@@ -44,14 +45,14 @@ init =
 
 
 type Msg
-    = ReplaceMe
+    = ClickedClear
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Shared.Model -> Msg -> Model -> ( Model, Cmd Msg )
+update shared msg model =
     case msg of
-        ReplaceMe ->
-            ( model, Cmd.none )
+        ClickedClear ->
+            ( model, (Storage.deleteAllItems shared.storage) )
 
 
 
@@ -67,15 +68,16 @@ subscriptions model =
 -- VIEW
 
 
-view : Auth.User -> Request -> Model -> View Msg
-view user request model =
+view : Auth.User -> Shared.Model -> Request -> Model -> View Msg
+view user shared request model =
     { title = "qrid — settings"
     , body =
         UI.layout user [
             Html.main_ [ A.class "container page-container", A.id "main-content"] 
             [ Html.h1 [ A.class ""] [ Html.text "Register an item" ]
             , Html.p [ A.class "font-lead"] [ Html.text "Here you can add a new item to your collection"]
-            , viewSwitch            
+            , viewSwitch       
+            , viewStorageClear shared    
             ]
          ]
         
@@ -88,4 +90,12 @@ viewSwitch =
         [ Html.input [A.id "form-storage-toggle", A.type_ "checkbox", A.class "form-toggle"][]
         , Html.label [A.for "form-storage-toggle", A.class "form-toggle-label"][Html.text "remote"]
     ]
+
+viewStorageClear : Shared.Model -> Html Msg
+viewStorageClear shared = 
+    Html.div [] 
+    [ Html.h2 [ A.class ""] [ Html.text "Local storage" ]
+    , Html.div[ A.class "m-4"][Html.button [ A.class "button button-primary" , Events.onClick ClickedClear ] [ Html.text ("Delete " ++ (String.fromInt (List.length shared.storage.collection)) ++ " item(s)") ]]
+    ]    
+    
 
