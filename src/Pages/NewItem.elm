@@ -48,6 +48,7 @@ type alias Model =
     , createSucces : Maybe String
     , hasBeenValidated : Bool    
     , pageTitle : String
+    -- set the random seed here... using values from storage. 
     }
 
 type IdSource 
@@ -60,6 +61,7 @@ nillTemplate = "00000000-0000-0000-0000-000000000000"
 
 
 
+-- add let-in to avoid repeating. 
 init :  Request -> (Model, Cmd Msg )
 init req =
     case Dict.get "qrid" req.query of 
@@ -93,6 +95,7 @@ init req =
               }
               , Cmd.none 
             )
+    -- set the random seed here... using values from storage. 
 
 
 
@@ -155,6 +158,7 @@ update shared msg model  =
                 updatedItem = 
                     { preItem | qrid = UUID.toString QRID.generate }                    
 
+                -- new UUID and step seed....
                 --_ = Debug.log "Generated  "
             in            
             ( { model |  item = updatedItem, newIdSource = Generated } , Cmd.none )

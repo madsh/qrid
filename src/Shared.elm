@@ -27,6 +27,7 @@ init req flags =
     let
         model =
             { storage = Storage.fromJson flags }
+        -- here we should read the flags and store them in ints for seeds
     in
     ( model
     , if model.storage.user /= Nothing && req.route == Gen.Route.SignIn then

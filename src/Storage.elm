@@ -16,11 +16,13 @@ import Domain.Item as Item exposing (Item)
 import Json.Decode as Decode
 import Json.Encode as Encode
 import Dict
+import Random 
 
 
 type alias Storage =
     { user : Maybe User
     , collection : List Item
+    , seed : Int
     }
 
 type Msg = ItemStored
@@ -50,15 +52,20 @@ init : Storage
 init =
     { user = Nothing
     , collection = []
+    , seed = 1234567890 -- should be four ints parsed in from javascript side
     }
 
 
 decoder : Decode.Decoder Storage
-decoder = Decode.map2 Storage 
+decoder = Decode.map3 Storage 
             (Decode.field "user" (Decode.maybe User.decoder))
             (Decode.field "collection" (Decode.list Item.decoder))
+            (Decode.field "seed" (Decode.int))
+
+
 
     
+
 
 
 
