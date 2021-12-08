@@ -12,6 +12,7 @@ import UI
 import Dict exposing (Dict)
 import View exposing (View)
 import Browser.Navigation
+import Icon exposing (generate)
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
@@ -76,6 +77,7 @@ view user request _ =
             , Html.div[ Attr.class "m-4"][Html.button [ Attr.class "button button-primary",Events.onClick ClickedSignOut ] [ Html.text "Sign out" ]]    
             , Html.div[ Attr.class "m-4"][Html.button [ Attr.class "button button-primary", Events.onClick ClickedScan ] [ Html.text "Click to try the scanner!" ]]
             , Html.div[ Attr.class "m-4"][Html.button [ Attr.class "button button-primary", Events.onClick ClickedGenerate ] [ Html.text "Click to try generator" ]]
+            , Icon.generate, Icon.scan
             ]
          ]        
     }

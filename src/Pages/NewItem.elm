@@ -20,7 +20,7 @@ import Gen.Route as Route exposing (Route)
 import Browser.Navigation
 import List exposing (length)
 import Json.Decode exposing (int)
-
+import Icon
 
 
 page : Shared.Model -> Request -> Page.With Model Msg
@@ -46,7 +46,7 @@ type alias Model =
     , descError : Maybe String
     , createError : Maybe String
     , createSucces : Maybe String
-    , showErrors : Bool    
+    , hasBeenValidated : Bool    
     , pageTitle : String
     }
 
@@ -73,7 +73,7 @@ init req =
               , createError = Nothing   
               , createSucces = Nothing      
               , descError = Nothing
-              , showErrors = False     
+              , hasBeenValidated = False     
               , pageTitle = "new from tag"
               }
               , Cmd.none 
@@ -88,7 +88,7 @@ init req =
               , createError = Nothing
               , createSucces = Nothing
               , descError = Nothing
-              , showErrors = False
+              , hasBeenValidated = False
               , pageTitle = "new no tag yet"
               }
               , Cmd.none 
@@ -181,17 +181,17 @@ update shared msg model  =
         -}
 
         PressedValidate -> 
-            ( (validate {model | showErrors = True})
+            ( (validate {model | hasBeenValidated = True})
             , Cmd.none 
             )
         
         PressedRegister -> 
-            ( (validate {model | showErrors = True})
+            ( (validate {model | hasBeenValidated = True})
             , if (model.ready) then (storeItemRemote model) else Cmd.none 
             )
 
         PressedRegisterLocally -> 
-            ( (validate {model | showErrors = True})
+            ( (validate {model | hasBeenValidated = True})
             --, if (model.ready) then (storeItemRemote model) else Cmd.none {- store on server -}                           
             , if (model.ready) then ((Storage.addItem model.item shared.storage)) else Cmd.none                            
             )
@@ -283,7 +283,7 @@ view user request model =
             , viewPageError model.createError
             , viewForm user model request           
             --, viewFormRegister user model
-            , Html.div[A.class "mt-6"][Html.text (if (model.showErrors) then "Showing Errors" else "Not showing Errors")]
+            , Html.div[A.class "mt-6"][Html.text (if (model.hasBeenValidated) then "Showing Errors" else "Not showing Errors")]
             ]
          ]
         
@@ -304,20 +304,20 @@ viewForm user model request =
 
 viewFormUUID : Auth.User -> Model -> Request -> Html Msg
 viewFormUUID user model request =
-    Html.div [ A.class "form-group mt-9", A.id "form-uuid-group"] 
+    Html.div [ A.class "form-group mt-6", A.id "form-uuid-group"] 
     [ Html.label [A.class "form-label", A.for "form-uuid-input"][ Html.text "UUID"]
     , Html.span [A.class "form-hint mb-3", A.id "hint1"][ Html.text "What is the UUID you want to register this item under?"]
     --, Html.span [A.class "form-hint", A.id "hint2"][ Html.text "A UUID has the form of 88c973e3-f83f-4360-a320-d8844c365130"]
     --, viewFormUUIDError model
-    , Html.button [ Events.onClick PressedGenerate, A.class "button button-secondary"] [ Html.text "Generate"]              
-    , Html.button [ Events.onClick PressedScan, A.class "button button-secondary"] [ Html.text "Scan"]                            
+    , Html.button [ Events.onClick PressedGenerate, A.class "button button-secondary"] [ Icon.generate, Html.text "Generate"]              
+    , Html.button [ Events.onClick PressedScan, A.class "button button-secondary"] [ Icon.scan, Html.text "Scan"]    
     , Html.input [ A.id "form-uuid-input"
                      , A.name "uuid-field"                     
-                     , A.class "form-input input-width-xl mt-6"
+                     , A.class "form-input input-width-xl mt-4"
                      , A.value model.item.qrid
                      , Events.onInput UpdatedUUID 
                      , Events.onFocus FocusedUUID
-                     ] []       
+                     ] []
     ] 
      
 
