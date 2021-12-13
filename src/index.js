@@ -1,6 +1,6 @@
 import * as React from "react";
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Layout from "./pages/Layout";
 import List from "./pages/List"
 import NewItemPage from './pages/NewItem';
@@ -10,7 +10,7 @@ import ProfilePage from "./pages/Profile"
 import LookupPage from "./pages/Lookup"
 import WelcomePage from "./pages/Welcome"
 import NoPage from './pages/NoPage';
-import { hasQridUser } from "./QRID";
+//import { hasQridUser } from "./QRID";
 //import { hasQridUser } from "./QRID";
 
 //const UserContext  = React.createContext();
@@ -18,9 +18,9 @@ import { hasQridUser } from "./QRID";
 //const hasUser = hasQridUser();
 
 
-function PrivateRoute({ children }) {
-  return hasQridUser() ? children : <Navigate to="/not-welcome-yet" />;
-}
+//function PrivateRoute({ children }) {
+//  return hasQridUser() ? children : <Navigate to="/not-welcome-yet" />;
+//}
 
 
 function App() {  
