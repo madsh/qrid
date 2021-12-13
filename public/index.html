@@ -1,87 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
 
-    <link type="text/css" rel="stylesheet" href="/css/dkfds.css" />
-    <link rel="preload" href="fonts/IBMPlexSans-Medium.woff" as="font" crossorigin="">
-    <link rel="preload" href="fonts/IBMPlexSans-Bold.woff" as="font" crossorigin="">
-    <link rel="preload" href="fonts/IBMPlexSans-Regular.woff" as="font" crossorigin="">
-    <link rel="preload" href="fonts/IBMPlexSans-SemiBold.woff" as="font" crossorigin="">
-    <script type="application/javascript" src="./qrcodegen.js"></script>
-
+    <link type="text/css" rel="stylesheet" href="/css/dkfds-borgerdk.css" />
 
     <style>
-        .mynav {
-            font-size: medium;
-            font-weight: 600;
-            text-decoration: none;
-            color: black;
-        }
-        
-        .mynav:hover {
-            text-decoration: underline;
-            text-decoration-color: red;
-            text-decoration-style: double;
-        }
-        
-        .mynav:visited {
-            color: black;
-        }
-        
-        #topbox {
-            display: flex;
-            flex-flow: row wrap;
-        }
-        
-        #topbox .topleft {
-            width: 33.33333%;
-            text-align: left;
-            font-weight: bolder;
-        }
-        
-        #topbox .topcenter {
-            width: 33.33333%;
-            text-align: center;
-        }
-        
-        #topbox .topright {
-            width: 33.33333%;
-            text-align: right;
-        }
-        
-        .small-id {
-            font-weight: 100;
-            font-size: smaller;
-        }
+      .logo:visited   {
+          color: #bbb;          
+      }
+
+      .logo {
+        text-decoration: underline double #ddd;
+      }
     </style>
 
-</head>
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>    
+    <!-- <a className="skipnav" href="#main-content">Gå til sidens indhold</a>
+      No idea where to init this...
+    -->
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
 
-<body id="body">
-    <script src="/dist/elm.js"></script>
-    <script src="/main.js"></script>
-    <script src="/dkfds.js"></script>
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
 
-    <script>
-        function QrCode(content) {
-            const ecl = qrcodegen.QrCode.Ecc.MEDIUM;
-            const segs = qrcodegen.QrSegment.makeSegments(content);
-            const qr = qrcodegen.QrCode.encodeSegments(segs, ecl, 2, 20, 2, true);
-            const code = toSvgString(qr, 4, "#FFFFFF", "#000000");
-            const viewBox = / viewBox="([^"]*)"/.exec(code)[1];
-            const pathD = / d="([^"]*)"/.exec(code)[1];
-            svg.setAttribute("viewBox", viewBox);
-            svg.querySelector("path").setAttribute("d", pathD);
-            svg.querySelector("rect").setAttribute("fill", lightColor);
-            svg.querySelector("path").setAttribute("fill", darkColor);
-            svg.style.removeProperty("display");
-            console.log("Returning a qr: " + code)
-            return code;
-        }
-    </script>
-</body>
-
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
 </html>
