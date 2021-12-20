@@ -4,10 +4,6 @@ export default class extends AbstractView {
   constructor(params) {
     super(params);    
     this.setTitle('qrid');
-
-    if (window.hasUser()) {
-        console.log("Found one....");        
-    }
   }
 
 
@@ -22,12 +18,12 @@ export default class extends AbstractView {
     Lets get a UUID, store it and go to the list....
     <br/>
 
-    <button id="button-welcome" onClick="clickedWelcome()" type="button" class="btn btn-primary mt-3">Jump right in</button>
+    <div id="button-welcome" onClick="clickedWelcome()" class="btn btn-primary mt-3">Jump right in</div>
 
     <h1 class="mt-4">...or welcome back</h1>
     You have registered, lets recognize you
     <br/>
-    <button type="button-login" class="btn btn-outline-primary mt-3" disabled>Log in</button>
+    <button type="button-login" class="btn btn-outline-primary mt-3">Log in</button>
 </div>
     `;
   }
