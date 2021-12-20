@@ -1,0 +1,55 @@
+.form-error {
+    border-left: 4px solid #c00;
+    padding-left: 12px;
+}
+
+.form-hint, .form-error-message, .form-label {
+    display: block;            
+    font-weight: 400;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-error-message {
+    font-weight: 600;
+    color: #c00;
+    margin-top: 4px;
+}
+.form-hint {
+    color: #747474;    
+}
+
+input {
+    margin-top: 8px;
+}
+
+input.form-error {
+    border: solid 2px #c00;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    left: -999em;
+}
+
+.icon-svg {
+    height: 1.8rem;
+    width: 1.8rem;
+    vertical-align: middle;
+}
+
+a.logo {
+    text-decoration: underline double #ddd;
+    color: #aaa;
+    font-weight: 500;
+    font-size: large;
+}
