@@ -98,9 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
 window.clickedWelcome = () => {
   alert("Welcome registered");
   if (hasUser()) {
+    alert("Existing user, forwarding");
     navigateTo('/list');
   } else {
+    alert("No Existing user, creating one");
     localStorage.setItem(LOCAL_USER_PARAM, crypto.randomUUID());
+    alert("Forwarding");
     navigateTo('/list');
   }  
 }
