@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 window.clickedWelcome = () => {
+  alert("Welcome registered");
   if (hasUser()) {
     navigateTo('/list');
   } else {
