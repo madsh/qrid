@@ -112,10 +112,11 @@ window.hasUser = () => {
   let stored = localStorage.getItem(LOCAL_USER_PARAM);  
   if (!stored) return false;
   if (!stored.match("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) return false;
-  return true;
+  return stored;
 }
 
-window.clickedForgetMe = () => {  
+window.clickedForgetMe = () => { 
+  localStorage.removeItem(hasUser());         // 
   localStorage.removeItem(LOCAL_USER_PARAM);
   navigateTo('/');
 }

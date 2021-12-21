@@ -13,7 +13,7 @@ export default class extends AbstractView {
 
   async getHtml() {
     return `
-    <div id="welcome" class="mb-5 ms-3 mt-5 container">
+    <div id="welcome" class="mb-5 mt-5 container">
     <h1>Welcome</h1>
     Lets get a UUID, store it and go to the list....
     <br/>
