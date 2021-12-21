@@ -125,9 +125,7 @@ window.submittedAdd = () => {
     let uuid = document.getElementById("form-uuid").value
     if (!uuid) { uuid = window.uuid()}
     console.log(name, uuid)
-    alert("Storing");
-    storeItem({ name: name, qrid: uuid});    
-    alert("Navigating");
+    storeItem({ name: name, qrid: uuid});        
     navigateTo('/list');
   } else {
     console.log("but was invalid");
