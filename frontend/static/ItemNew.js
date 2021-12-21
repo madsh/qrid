@@ -36,9 +36,9 @@ export default class extends AbstractView {
         </div>
 
         <button type="submit" class="btn btn-primary">Add to list</button>
-        <div onClick="(function(){document.getElementById('form-uuid').value = uuid();})()" type="button" class="btn btn-outline-secondary">Generate</div>  
+        
     </form>
-    
+    <button onClick="(function(){document.getElementById('form-uuid').value = uuid();})()" class="mt-3 btn btn-outline-secondary">Generate a UUID</button>      
       
 
 </div>

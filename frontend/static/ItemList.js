@@ -51,7 +51,7 @@ export default class extends AbstractView {
     }
     
     html += `</tbody></table>
-             <a href="/item/new" type="button" class="btn btn-secondary" data-link>Add</a>
+             <a href="/item/new" data-link><button class="btn btn-secondary">Add</button></a>
              </div>`
 
     return html    
