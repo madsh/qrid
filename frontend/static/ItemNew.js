@@ -36,7 +36,7 @@ export default class extends AbstractView {
         </div>
 
         <button type="submit" class="btn btn-primary">Add to list</button>
-        <div onClick="(function(){document.getElementById('form-uuid').value = crypto.randomUUID();})()" type="button" class="btn btn-outline-secondary">Generate</div>  
+        <div onClick="(function(){document.getElementById('form-uuid').value = uuid();})()" type="button" class="btn btn-outline-secondary">Generate</div>  
     </form>
     
       

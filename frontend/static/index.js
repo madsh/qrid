@@ -102,7 +102,7 @@ window.clickedWelcome = () => {
     navigateTo('/list');
   } else {
     alert("No Existing user, creating one");
-    localStorage.setItem(LOCAL_USER_PARAM, crypto.randomUUID());
+    localStorage.setItem(LOCAL_USER_PARAM, uuid());
     alert("Forwarding");
     navigateTo('/list');
   }  
@@ -126,7 +126,7 @@ window.submittedAdd = () => {
   if (form.checkValidity()) {
     let name = document.getElementById("form-name").value
     let uuid = document.getElementById("form-uuid").value
-    if (!uuid) { uuid = crypto.randomUUID()}
+    if (!uuid) { uuid = uuid()}
     console.log(name, uuid)
     storeItem({ name: name, qrid: uuid});    
     navigateTo('/list');
@@ -135,3 +135,13 @@ window.submittedAdd = () => {
   }
 }
 
+
+// crypto.randomUUID() was not in Safari IOS. So we need a more general method
+// a more widespread api actually does have a UUID per spec. 
+window.uuid = () => {
+  const url_with_uuid = URL.createObjectURL(new Blob())
+  const uuid = url_with_uuid.split('/').pop()
+  URL.revokeObjectURL(url_with_uuid)
+  console.log("generated : ", uuid, uuid.match("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) 
+  return uuid
+}
