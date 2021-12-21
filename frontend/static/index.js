@@ -96,14 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 window.clickedWelcome = () => {
-  alert("Welcome registered");
   if (hasUser()) {
-    alert("Existing user, forwarding");
     navigateTo('/list');
-  } else {
-    alert("No Existing user, creating one");
+  } else {    
     localStorage.setItem(LOCAL_USER_PARAM, uuid());
-    alert("Forwarding");
     navigateTo('/list');
   }  
 }
