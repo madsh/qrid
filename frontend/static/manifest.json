@@ -1,6 +1,0 @@
-{
-    "name" : "qrid info app",
-    "short_name" : "qrid",
-    "start_url" : "https://qrid.info/",
-    "display" : "standalone"    
-}

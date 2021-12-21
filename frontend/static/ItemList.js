@@ -14,8 +14,6 @@ export default class extends AbstractView {
     // This is hardcoded for now but could be done dynamically using templating
     // and maybe some posts in a posts folder.
     let list = getItems()
-    console.log(list)
-
 
     if (list.length < 1) {
       return `<div id="list" class="mb-5 mt-5 container">
@@ -41,8 +39,6 @@ export default class extends AbstractView {
         <tbody>`
 
     for (const item in list) {
-      console.log("loogin at ", item);
-
       html += `<tr>
                 <td><a href="/item/${list[item].qrid}" data-link>${list[item].name}</a></td>
                 <td>${list[item].desc || "<small class='text-muted text'><em>no description</em></small>"}</td>

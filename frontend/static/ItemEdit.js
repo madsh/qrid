@@ -1,31 +1,37 @@
-import AbstractView from './AbstractView.js';
+import AbstractView from './AbstractView.js'
+import { getItem } from './APIv1.js'
+
 
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.postID = params.id;
-    this.setTitle('Viewing Post');
+    this.item = getItem(params.id)
+    this.setTitle('Viewing Post')
   }
+
+
 
 
   async getHtml() {
     return `
-    <div id="edit" class="mb-5 mt-5 container">
-    <h1>Name of Item</h1>
-    <p><small>${this.postID}</small></p>
+    <div id="edit" class="mb-2 mt-2 container">
+    
+    <h1 class="mt-4"><em>${this.item.name}</em></h1>
+    <p class="mb-4"><small class="text-muted">${this.item.qrid}</small></p>
 
-    <form>
-        
+    <form id="edit-item-form">
+        <input type="hidden" id="form-qrid" value="${this.item.qrid}" />
         <div class="mb-3">
             <label for="form-desc" class="form-label">Description</label>
             <div class="form-hint" id="form-name-hint">
               A short description of your item. 
               <a href="">read more</a>
             </div>
-            <textarea class="form-control mt-1" id="form-desc" rows="2"></textarea>
+            <textarea class="form-control mt-1" id="form-desc" rows="4">${this.item.desc ? this.item.desc : ""}</textarea>
             <div class="text-end mt-3">
-            <button type="button" class="btn btn-outline-secondary">Save and Add more details</button>
-            <button type="button" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-outline-secondary">Save and Add more details</button>            
+            <button type="button" class="btn btn-primary" onClick="clickedSaveDescription()">Save Description</button>
+
             </div>
         </div>
 
@@ -43,12 +49,14 @@ export default class extends AbstractView {
 
         <div class="text-end">
         <button type="button" class="btn btn-outline-secondary">Delete Public Note</button>
-        <button type="button" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary" onClick="clickedPreviewPublicNote()">Preview Note</button>
+        <button type="button" class="btn btn-primary" onClick="clickedSavePublicNote()" disabled>Save Note</button>
+
 
         </div>
 
         <div class="mb-3">
-          <button type="button" class="btn btn-secondary">Delete Item</button>
+          <button type="button" class="btn btn-secondary" onClick="clickedDeleteItem()">Delete Item</button>
         </div>
     </form>
 

@@ -25,6 +25,32 @@ function getItems() {
     return JSON.parse(localStorage.getItem(userId))
 }
 
+function getItem(id) {
+    let item = getItems().find( item => item.qrid === id)    
+    return item;
+}
+
+function setDesc(id, desc) {
+    let userId = localStorage.getItem(LOCAL_USER_PARAM)    
+    let list = getItems()
+    let index = getItems().findIndex( item => item.qrid === id)    
+    list[index]['desc'] = desc;
+    localStorage.setItem(userId, JSON.stringify(list));    
+}
+
+function delItem(id) {    
+    let list = getItems()
+    console.log("before ", list);
+    var newList = list.filter( item => item.qrid !== id);
+    console.log("after ", newList);
+    setItems(newList);
+}
+
+function setItems(list) {
+    let userId = localStorage.getItem(LOCAL_USER_PARAM);
+    localStorage.setItem(userId, JSON.stringify(list));            
+}
+
 
 function ensureDatabase(userId) {
     let found  = localStorage.getItem(userId);
@@ -37,6 +63,6 @@ function ensureDatabase(userId) {
 
 
 
-export {LOCAL_USER_PARAM, storeItem, getItems}
+export {LOCAL_USER_PARAM, storeItem, getItems, getItem, setDesc, delItem}
 
 

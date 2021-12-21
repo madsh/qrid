@@ -53,3 +53,11 @@ a.logo {
     font-weight: 500;
     font-size: large;
 }
+
+h1, thead, p {
+    color: #424242;
+}
+
+.btn-primary {
+    background-color: #066893;
+}

@@ -6,7 +6,7 @@ import ItemNew from './ItemNew.js';
 import Profile from './Profile.js';
 import ItemViewPublic from './ItemViewPublic.js';
 //import Settings from './views/Settings.js';
-import {LOCAL_USER_PARAM, storeItem} from './APIv1.js'
+import {LOCAL_USER_PARAM, storeItem, setDesc, delItem} from './APIv1.js'
 
 
 
@@ -95,6 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+// crypto.randomUUID() was not in Safari IOS. So we need a more general method
+// a more widespread api actually does have a UUID per spec. 
+window.uuid = () => {
+  const url_with_uuid = URL.createObjectURL(new Blob())
+  const uuid = url_with_uuid.split('/').pop()
+  URL.revokeObjectURL(url_with_uuid)  
+  return uuid
+}
+
 window.clickedWelcome = () => {
   if (hasUser()) {
     navigateTo('/list');
@@ -117,28 +126,32 @@ window.clickedForgetMe = () => {
   navigateTo('/');
 }
 
-
 window.submittedAdd = () => {  
   const form = document.getElementById("register-item-form");
   if (form.checkValidity()) {
     let name = document.getElementById("form-name").value
     let uuid = document.getElementById("form-uuid").value
-    if (!uuid) { uuid = window.uuid()}
-    console.log(name, uuid)
+    if (!uuid) { uuid = window.uuid()}    
     storeItem({ name: name, qrid: uuid});        
     navigateTo('/list');
-  } else {
-    console.log("but was invalid");
-  }
+  } 
+}
+
+window.clickedSaveDescription = () => {
+  const form = document.getElementById("edit-item-form");
+  if (form.checkValidity()) {    
+    setDesc(
+      document.getElementById("form-qrid").value,
+      document.getElementById("form-desc").value,  
+    );  
+    navigateTo('/list');
+  } 
+}
+
+window.clickedDeleteItem = () => {
+  console.log("clicked Delete");
+  delItem(document.getElementById("form-qrid").value);
+  navigateTo('/list');
 }
 
 
-// crypto.randomUUID() was not in Safari IOS. So we need a more general method
-// a more widespread api actually does have a UUID per spec. 
-window.uuid = () => {
-  const url_with_uuid = URL.createObjectURL(new Blob())
-  const uuid = url_with_uuid.split('/').pop()
-  URL.revokeObjectURL(url_with_uuid)
-  console.log("generated : ", uuid, uuid.match("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")) 
-  return uuid
-}
