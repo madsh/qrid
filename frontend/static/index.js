@@ -4,6 +4,7 @@ import ItemEdit from './ItemEdit.js';
 import ItemList from './ItemList.js';
 import ItemNew from './ItemNew.js';
 import Profile from './Profile.js';
+import Scan from './Scan.js';
 import ItemViewPublic from './ItemViewPublic.js';
 //import Settings from './views/Settings.js';
 import {LOCAL_USER_PARAM, storeItem, setDesc, delItem} from './APIv1.js'
@@ -13,19 +14,21 @@ import {LOCAL_USER_PARAM, storeItem, setDesc, delItem} from './APIv1.js'
 
 // Single Page Application based on https://github.com/MichaelCurrin/single-page-app-vanilla-js.git
 
-const navigateTo = url => {
+window.navigateTo = (url) => {
   history.pushState(null, null, url);
   router();
-};
+}
 
 const router = async () => {
   const routes = [
-    { path: '/', view: Home },
-    { path: '/list', view: ItemList },
-    { path: '/item/new', view: ItemNew },
-    { path: '/item/:id', view: ItemEdit },
-    { path: '/profile', view: Profile }, 
-    { path: '/:id', view: ItemViewPublic },
+    { path: '/', userView: ItemList, noUserView: Home },
+    { path: '/list', userView: ItemList, noUserView: Home },    
+    { path: '/item/new/:id', userView: ItemNew, noUserView: Home },    
+    { path: '/item/new', userView: ItemNew, noUserView: Home },
+    { path: '/item/:id', userView: ItemEdit, noUserView: Home },
+    { path: '/profile', userView: Profile, noUserView: Home },
+    { path: '/scan', userView: Scan, noUserView: Home }, 
+    { path: '/:id', userView: ItemViewPublic },
   ];
 
   // Test each route for a potential match.
@@ -48,10 +51,18 @@ const router = async () => {
     };
   }
 
-  const view = new match.route.view(getParams(match));
+  if (match.route.noUser && !hasUser()) {
+    const view = new match.route.noUserView(getParams(match));    
+    // TODO: Find a more secure way of doing this
+    document.querySelector('#app').innerHTML = await view.getHtml();
+  } else {
+    const view = new match.route.userView(getParams(match));
+    // TODO: Find a more secure way of doing this
+    document.querySelector('#app').innerHTML = await view.getHtml();
+  }
+  
 
-  // TODO: Find a more secure way of doing this
-  document.querySelector('#app').innerHTML = await view.getHtml();
+  
 };
 
 const pathToRegex = path =>
@@ -80,10 +91,10 @@ const getParams = match => {
 window.addEventListener('popstate', router);
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.body.addEventListener('click', e => {
+  document.body.addEventListener('click', e => {    
     if (e.target.matches('[data-link]')) {
-      e.preventDefault();
-      navigateTo(e.target.href);
+      e.preventDefault();      
+      navigateTo(e.target.href);      
     }
   });
 
@@ -154,4 +165,30 @@ window.clickedDeleteItem = () => {
   navigateTo('/list');
 }
 
+window.clickedStart = () => {
+  console.log("Starting to scan");
+
+  document.getElementById("scanner-intro").style.display = 'none';
+
+  window.html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader", { fps: 20, qrbox: 450 });
+  html5QrcodeScanner.render(scannedQR);
+}
+
+
+window.scannedQR = (decodedText, decodedResult) => {  
+  console.log(decodedText);
+  if (decodedText.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
+    let uuid = decodedText.split("/").pop();
+    html5QrcodeScanner.clear();
+    navigateTo('/item/new/'+uuid);
+  } else {
+    console.log("Found a QR code without qrid info format");
+  // could be fun to reuse UUIDs from other QRs
+  }   
+}
+
+window.clickedRow = (id) => {
+  navigateTo('/item/'+id);
+}
 

@@ -6,7 +6,7 @@ export default class extends AbstractView {
   constructor(params) {
     super(params);
     this.item = getItem(params.id)
-    this.setTitle('Viewing Post')
+    this.setTitle('qrid.info - add description')
   }
 
 
@@ -40,12 +40,13 @@ export default class extends AbstractView {
             <span class="form-hint" id="form-name-hint">
               This note is shown to everyone scanning the QR code. <a href="">read more</a>
             </span>
+            <span class="form-hint" id="form-name-hint" style="color: #dc2828; font-weight: 600;">
+              Warning: Do not expose information, that can make you unsafe. 
+            </span>
             <textarea class="form-control mt-1" id="form-uuid" rows="4"></textarea>
         </div>
 
-        <div class="mb-3">
-          Preview of markdown rendering
-        </div>
+        
 
         <div class="text-end">
         <button type="button" class="btn btn-outline-secondary">Delete Public Note</button>

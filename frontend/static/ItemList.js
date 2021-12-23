@@ -7,7 +7,7 @@ const maybePluralize = (count, noun, suffix = 's') =>
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle('Posts');
+    this.setTitle('qrid.info - list of items');
   }
 
   async getHtml() {
@@ -39,7 +39,7 @@ export default class extends AbstractView {
         <tbody>`
 
     for (const item in list) {
-      html += `<tr>
+      html += `<tr onClick="clickedRow('${list[item].qrid}')">
                 <td><a href="/item/${list[item].qrid}" data-link>${list[item].name}</a></td>
                 <td>${list[item].desc || "<small class='text-muted text'><em>no description</em></small>"}</td>
               </tr>       

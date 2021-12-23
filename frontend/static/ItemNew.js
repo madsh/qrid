@@ -4,7 +4,8 @@ import AbstractView from './AbstractView.js';
 export default class extends AbstractView {
   constructor(params) {
     super(params);
-    this.setTitle('Posts');
+    this.uuid = (params['id']) ? params['id'] : '';
+    this.setTitle('qrid.info - add new');
   }
 
   async getHtml() {
@@ -32,13 +33,16 @@ export default class extends AbstractView {
             <span class="form-error-message" id="form-uuid-error"></span>                               
             <input type="text" class="form-control" id="form-uuid"
                    pattern="^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"                   
-                   title="most follow uuid form: 8-4-4-4-12">
+                   title="most follow uuid form: 8-4-4-4-12" value="${this.uuid}">
         </div>
-
+        <p class="text-end">
+        <a onClick="(function(){document.getElementById('form-uuid').value = uuid();})()" class="me-3 btn btn-outline-secondary">Generate a UUID</a>      
         <button type="submit" class="btn btn-primary">Add to list</button>
+
+        </p>
         
     </form>
-    <button onClick="(function(){document.getElementById('form-uuid').value = uuid();})()" class="mt-3 btn btn-outline-secondary">Generate a UUID</button>      
+    
       
 
 </div>

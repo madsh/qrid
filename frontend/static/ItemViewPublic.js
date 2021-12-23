@@ -4,7 +4,7 @@ export default class extends AbstractView {
   constructor(params) {
     super(params);
     this.itemID = params.id;
-    this.setTitle('Viewing Post');
+    this.setTitle('qrid.info - public view');
   }
   
   async getHtml() {
@@ -28,14 +28,11 @@ export default class extends AbstractView {
         <div class="card-body">
         <h5 class="card-title">Public Note</h5>
         <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        
-        <div><small class="text-muted">This is a public note from a user who has registered an item at qrid.info using the uuid: ${this.itemID},<br/>
-        If the user has provided some contact information, you can click the button below to get in touch.</small></div>
-        <a href="#" class="btn btn-primary mt-2">Contact</a>
-        </div>
-
-        
+        </div>        
       </div>
+
+      <div><small class="text-muted">This is a public note from a user who has registered an item at qrid.info using the uuid: ${this.itemID},<br/>
+        If the user has provided some contact information, you can click the button below to get in touch.</small></div>
     </div>`;
   }
 
