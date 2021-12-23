@@ -3,6 +3,7 @@ import List from './ItemList.js';
 import ItemEdit from './ItemEdit.js';
 import ItemList from './ItemList.js';
 import ItemNew from './ItemNew.js';
+import ItemNote from './ItemNote.js';
 import Profile from './Profile.js';
 import Scan from './Scan.js';
 import ItemViewPublic from './ItemViewPublic.js';
@@ -25,6 +26,7 @@ const router = async () => {
     { path: '/list', userView: ItemList, noUserView: Home },    
     { path: '/item/new/:id', userView: ItemNew, noUserView: Home },    
     { path: '/item/new', userView: ItemNew, noUserView: Home },
+    { path: '/item/note', userView: ItemNote, noUserView: Home },
     { path: '/item/:id', userView: ItemEdit, noUserView: Home },
     { path: '/profile', userView: Profile, noUserView: Home },
     { path: '/scan', userView: Scan, noUserView: Home }, 
@@ -179,7 +181,7 @@ window.clickedStart = () => {
 
 window.scannedQR = (decodedText, decodedResult) => {  
   console.log(decodedText);
-  if (decodedText.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
+  if (decodedText.match("/qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/i")) {
     let uuid = decodedText.split("/").pop();
     html5QrcodeScanner.clear();
     navigateTo('/item/new/'+uuid);

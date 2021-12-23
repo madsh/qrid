@@ -33,28 +33,7 @@ export default class extends AbstractView {
             <button type="button" class="btn btn-primary" onClick="clickedSaveDescription()">Save Description</button>
 
             </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="form-uuid" class="form-label">Public Note</label>
-            <span class="form-hint" id="form-name-hint">
-              This note is shown to everyone scanning the QR code. <a href="">read more</a>
-            </span>
-            <span class="form-hint" id="form-name-hint" style="color: #dc2828; font-weight: 600;">
-              Warning: Do not expose information, that can make you unsafe. 
-            </span>
-            <textarea class="form-control mt-1" id="form-uuid" rows="4"></textarea>
-        </div>
-
-        
-
-        <div class="text-end">
-        <button type="button" class="btn btn-outline-secondary">Delete Public Note</button>
-        <button type="button" class="btn btn-primary" onClick="clickedPreviewPublicNote()">Preview Note</button>
-        <button type="button" class="btn btn-primary" onClick="clickedSavePublicNote()" disabled>Save Note</button>
-
-
-        </div>
+        </div        
 
         <div class="mb-3">
           <button type="button" class="btn btn-secondary" onClick="clickedDeleteItem()">Delete Item</button>
