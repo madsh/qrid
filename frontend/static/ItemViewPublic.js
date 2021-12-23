@@ -16,7 +16,11 @@ export default class extends AbstractView {
   notFound() {
     return `<div class="mb-5 mt-5 container">
     <h1>Not Found</h1>
-    <p>#${this.itemID} does not match a registered route or the uuid format</p>`;
+    <p><tt>/${this.itemID}</tt> does not match a registered route or the uuid format</p>
+    <p><tt>${window.location.search}</tt></p>
+    `;
+
+
 
   }
 

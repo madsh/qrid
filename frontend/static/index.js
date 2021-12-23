@@ -183,13 +183,15 @@ window.clickedStart = () => {
 
 window.scannedQR = (decodedText, decodedResult) => {  
   console.log(decodedText);
-  if (decodedText.match("/qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/i")) {
+  if (decodedText.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
     let uuid = decodedText.split("/").pop();
     html5QrcodeScanner.clear();
     navigateTo('/item/new/'+uuid);
   } else {
     console.log("Found a QR code without qrid info format");
   // could be fun to reuse UUIDs from other QRs
+    html5QrcodeScanner.clear();
+    navigateTo('/badscan?'+decodedText);
   }   
 }
 
