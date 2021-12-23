@@ -30,11 +30,13 @@ function getItem(id) {
     return item;
 }
 
-function setDesc(id, desc) {
+function setItem(id, name, desc, newId) {
     let userId = localStorage.getItem(LOCAL_USER_PARAM)    
     let list = getItems()
     let index = getItems().findIndex( item => item.qrid === id)    
+    list[index]['name'] = name;
     list[index]['desc'] = desc;
+    list[index]['qrid'] = newId;    
     localStorage.setItem(userId, JSON.stringify(list));    
 }
 
@@ -63,6 +65,6 @@ function ensureDatabase(userId) {
 
 
 
-export {LOCAL_USER_PARAM, storeItem, getItems, getItem, setDesc, delItem}
+export {LOCAL_USER_PARAM, storeItem, getItems, getItem, setItem, delItem}
 
 

@@ -3,12 +3,12 @@ import List from './ItemList.js';
 import ItemEdit from './ItemEdit.js';
 import ItemList from './ItemList.js';
 import ItemNew from './ItemNew.js';
-import ItemNote from './ItemNote.js';
+import ItemMore from './ItemMore.js';
 import Profile from './Profile.js';
 import Scan from './Scan.js';
 import ItemViewPublic from './ItemViewPublic.js';
 //import Settings from './views/Settings.js';
-import {LOCAL_USER_PARAM, storeItem, setDesc, delItem} from './APIv1.js'
+import {LOCAL_USER_PARAM, storeItem, setItem, delItem} from './APIv1.js'
 
 
 
@@ -26,7 +26,7 @@ const router = async () => {
     { path: '/list', userView: ItemList, noUserView: Home },    
     { path: '/item/new/:id', userView: ItemNew, noUserView: Home },    
     { path: '/item/new', userView: ItemNew, noUserView: Home },
-    { path: '/item/note', userView: ItemNote, noUserView: Home },
+    { path: '/item/more', userView: ItemMore, noUserView: Home },
     { path: '/item/:id', userView: ItemEdit, noUserView: Home },
     { path: '/profile', userView: Profile, noUserView: Home },
     { path: '/scan', userView: Scan, noUserView: Home }, 
@@ -154,9 +154,11 @@ window.submittedAdd = () => {
 window.clickedSaveDescription = () => {
   const form = document.getElementById("edit-item-form");
   if (form.checkValidity()) {    
-    setDesc(
+    setItem(
       document.getElementById("form-qrid").value,
-      document.getElementById("form-desc").value,  
+      document.getElementById("form-name").value,
+      document.getElementById("form-desc").value,
+      document.getElementById("form-uuid").value,
     );  
     navigateTo('/list');
   } 

@@ -21,6 +21,16 @@ export default class extends AbstractView {
 
     <form id="edit-item-form">
         <input type="hidden" id="form-qrid" value="${this.item.qrid}" />
+        
+        <div class="mb-3">
+        <label for="form-desc" class="form-label">Name</label>
+            <div class="form-hint" id="form-name-hint">
+              A friendly name for your item              
+            </div>
+            <input class="form-control mt-1" id="form-name" value="${this.item.name}" required/>
+        </div>
+        
+        
         <div class="mb-3">
             <label for="form-desc" class="form-label">Description</label>
             <div class="form-hint" id="form-name-hint">
@@ -29,15 +39,36 @@ export default class extends AbstractView {
             </div>
             <textarea class="form-control mt-1" id="form-desc" rows="4">${this.item.desc ? this.item.desc : ""}</textarea>
             <div class="text-end mt-3">
-            <button type="button" class="btn btn-outline-secondary">Save and Add more details</button>            
-            <button type="button" class="btn btn-primary" onClick="clickedSaveDescription()">Save Description</button>
+          
+            <button type="button" class="btn btn-primary" onClick="clickedSaveDescription()">Save</button>
 
             </div>
-        </div        
+        </div>        
+
+        <div class="text-end mt-3">          
+          <button type="button" class="btn btn-outline-secondary">Add more</button>            
+        </div>
+
+
+        
+
+        <div class="mb-4 mt-4">
+        <label for="form-desc" class="form-label">UUID</label>
+            <div class="form-hint" id="form-uuid-hint">
+              You can change the UUID if you really need to.                
+            </div>
+            <input class="form-control mt-1" id="form-uuid" value="${this.item.qrid}" required/>
+            <div class="text-end mt-3">                      
+            </div>
+        </div>        
 
         <div class="mb-3">
-          <button type="button" class="btn btn-secondary" onClick="clickedDeleteItem()">Delete Item</button>
+          <button type="button" class="btn btn-secondary me-2" onClick="clickedDeleteItem()">Delete Item</button>          
+          
         </div>
+        </div>
+
+
     </form>
 
 </div>
