@@ -51,7 +51,8 @@ const router = async () => {
     };
   }
 
-  if (match.route.noUser && !hasUser()) {
+  // maybe just a boolean, since we always forward to a login page....
+  if (match.route.noUserView && !hasUser()) {
     const view = new match.route.noUserView(getParams(match));    
     // TODO: Find a more secure way of doing this
     document.querySelector('#app').innerHTML = await view.getHtml();
