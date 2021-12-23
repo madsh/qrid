@@ -1,3 +1,22 @@
+.form-error {
+    border-left: 4px solid #c00;
+    padding-left: 12px;
+}
+
+.form-hint, .form-error-message, .form-label {
+    display: block;            
+    font-weight: 400;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-error-message {
+    font-weight: 600;
+    color: #c00;
+    margin-top: 4px;
+}
 .form-hint {
     color: #747474;    
 }
@@ -29,6 +48,7 @@ input.form-error {
 }
 
 
+
 h1, thead, p {
     color: #424242;
 }
@@ -42,6 +62,7 @@ h1, thead, p {
     color: #066893;
     border-color: #066893;
 }
+
 
 /* hack to supres events from svg icons in menubar... prevents reloads -> speed...*/
 svg {
