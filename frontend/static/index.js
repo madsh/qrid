@@ -5,7 +5,8 @@ import ItemList from './ItemList.js';
 import ItemNew from './ItemNew.js';
 import ItemMore from './ItemMore.js';
 import Profile from './Profile.js';
-import Scan from './Scan.js';
+import ScanA from './Scan.js';
+import ScanB from './Scan2.js';
 import ItemViewPublic from './ItemViewPublic.js';
 //import Settings from './views/Settings.js';
 import {LOCAL_USER_PARAM, storeItem, setItem, delItem} from './APIv1.js'
@@ -29,7 +30,8 @@ const router = async () => {
     { path: '/item/more', userView: ItemMore, noUserView: Home },
     { path: '/item/:id', userView: ItemEdit, noUserView: Home },
     { path: '/profile', userView: Profile, noUserView: Home },
-    { path: '/scan', userView: Scan, noUserView: Home }, 
+    { path: '/scan-a', userView: ScanA, noUserView: Home }, 
+    { path: '/scan-b', userView: ScanB, noUserView: Home }, 
     { path: '/:id', userView: ItemViewPublic },
   ];
 
@@ -199,3 +201,4 @@ window.clickedRow = (id) => {
   navigateTo('/item/'+id);
 }
 
+// Gonna try another QR scanner....
