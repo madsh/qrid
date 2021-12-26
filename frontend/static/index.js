@@ -183,7 +183,7 @@ window.clickedStart = () => {
 
   window.html5QrcodeScanner = new Html5QrcodeScanner(
     "reader", { fps: 20, qrbox: 450 });
-  windows.html5QrcodeScanner.render(scannedQR);
+  window.html5QrcodeScanner.render(scannedQR);
 
 
 }
