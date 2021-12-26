@@ -198,7 +198,7 @@ window.clickedStart = (camid) => {
       document.getElementById("cameras").innerHTML = "No camera found";    
     });
   } else { // we selected a camera
-    
+    document.getElementById("scanner-intro").style.display = 'none';
     const scanner = new Html5Qrcode("reader");
     scanner.start(
       camid,       
@@ -229,12 +229,8 @@ window.clickedStart = (camid) => {
     
   }
   
-
-  
-
-
-
 }
+
 
 
 
