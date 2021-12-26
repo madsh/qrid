@@ -179,11 +179,35 @@ window.clickedDeleteItem = () => {
 window.clickedStart = () => {
   console.log("Starting to scan");
 
-  document.getElementById("scanner-intro").style.display = 'none';
+  //document.getElementById("scanner-intro").style.display = 'none';
 
-  window.html5QrcodeScanner = new Html5QrcodeScanner(
-    "reader", { fps: 20, qrbox: 450 });
-  window.html5QrcodeScanner.render(scannedQR);
+  var cams = "";
+
+  // lets try to find all camera ans list them
+
+  Html5Qrcode.getCameras().then(devices => {
+    console.log("Gettings cams");
+    cams = "<ol>"
+    if (devices && devices.length) {
+      console.log("found ", devices);
+      for (var i = 0; i < devices.length ; i++) {
+        cams += "<li>"+devices[i].label+"</li>"
+        
+      } 
+    }
+    cams += "</ol>"
+    document.getElementById("cameras").innerHTML = cams;
+  }).catch(err => {
+    console.log(err);
+    cams = "no cams";
+  });
+
+  
+
+  //window.html5QrcodeScanner = new Html5QrcodeScanner(
+  //  "reader", { fps: 20, qrbox: 450 });
+  //window.html5QrcodeScanner.render(scannedQR);
+
 
 
 }

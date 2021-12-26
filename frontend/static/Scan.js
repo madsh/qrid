@@ -19,6 +19,7 @@ export default class extends AbstractView {
         <div class="card-body">
       
         <p class="card-text text-muted">You are about to start webcamera to scan a QR code. We will ask for permission before turning on your camera. </p>
+        <p class="card-text text-muted" id="cameras"></p>
         <p class="text-end">
         <a type="button" class="btn btn-outline-secondary me-3" 
             href="item/new/${uuid()}" data-link>Fake Random</a>
