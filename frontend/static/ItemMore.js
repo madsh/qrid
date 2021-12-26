@@ -36,9 +36,13 @@ export default class extends AbstractView {
     return bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '')
   }
 
+  parseCode(code) {
+    return `<p class="${code.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}") ? 'text-success' : 'text-danger'}">${code}</p>`;
+  }
 
 
   async getHtml() {
+
     return `
     <div id="edit" class="mb-2 mt-2 container">
     
@@ -105,6 +109,14 @@ export default class extends AbstractView {
     <tt>base64: <small class="text-muted">${this.alt4}</small></tt>
     </div>
 
+    <h1 class="mt-4"><em>Parsing QR codes</em></h1>
+
+    <h2>Good ones</h2>
+
+      ${this.parseCode("qrid.info/abf88286-3b97-42da-bf0b-4b0d78a99492")}
+
+    <h2>Bad ones</h2>
+      ${this.parseCode("abf88286-3b97-42da-4b0d78a99492")}
 
 </div>
     `;

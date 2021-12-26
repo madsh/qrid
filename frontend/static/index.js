@@ -62,8 +62,8 @@ const router = async () => {
     document.querySelector('#app').innerHTML = await view.getHtml();
   } else {
     const view = new match.route.userView(getParams(match));
-    // TODO: Find a more secure way of doing this
-    document.querySelector('#app').innerHTML = await view.getHtml();
+    // TODO: Find a more secure way of doing this    
+    document.querySelector('#app').innerHTML = await view.getHtml();    
   }
   
 
@@ -220,7 +220,7 @@ window.clickedStart = (camid) => {
         }   
       },
       (errorMessage) => {
-        // parse error, ignore it.
+        console.error(errorMessage);
       })
     .catch((err) => {
       // Start failed, handle it.

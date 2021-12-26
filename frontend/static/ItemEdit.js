@@ -46,7 +46,7 @@ export default class extends AbstractView {
         </div>        
 
         <div class="text-end mt-3">          
-          <button type="button" class="btn btn-outline-secondary">Add more</button>            
+          <a type="button" class="btn btn-outline-secondary" href="/item/more" data-link>Add more</a>            
         </div>
 
 
