@@ -32,11 +32,6 @@ export default class extends AbstractView {
         </div>        
       </div>
     </div>
-
-    
-
-    <div class="auto" id="reader" ></div>
-
   
     </div>`;
   }
