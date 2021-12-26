@@ -27,7 +27,7 @@ export default class extends AbstractView {
         <a type="button" class="btn btn-outline-primary me-3" 
             href="item/new" data-link>Add Manually</a>
 
-        <button type="button" class="btn btn-primary" 
+        <button id="startButton" type="button" class="btn btn-primary" 
             onClick="clickedStart();">Start Scanner</button>
         </p>
         </div>        

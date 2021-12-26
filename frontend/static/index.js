@@ -176,56 +176,66 @@ window.clickedDeleteItem = () => {
 
 // QR scanner
 
-window.clickedStart = () => {
-  console.log("Starting to scan");
-
+window.clickedStart = (camid) => {
   //document.getElementById("scanner-intro").style.display = 'none';
-
-  var cams = "";
-
-  // lets try to find all camera ans list them
-
-  Html5Qrcode.getCameras().then(devices => {
-    console.log("Gettings cams");
-    cams = "<ol>"
-    if (devices && devices.length) {
-      console.log("found ", devices);
-      for (var i = 0; i < devices.length ; i++) {
-        cams += "<li>"+devices[i].label+"</li>"
-        
-      } 
-    }
-    cams += "</ol>"
-    document.getElementById("cameras").innerHTML = cams;
-  }).catch(err => {
-    console.log(err);
-    cams = "no cams";
-  });
+  document.getElementById("startButton").style.display = 'none';
+  console.log("Starting scan with " + camid);
+  // if no cam selected, lets try to find all camera ans list them
+  if (camid === undefined) {
+    Html5Qrcode.getCameras().then(devices => {
+      console.log("Gettings cams");
+      var cams = "<ol>"
+      if (devices && devices.length) {
+        console.log("found ", devices);
+        for (var i = 0; i < devices.length ; i++) {
+          cams += `<li onClick="clickedStart('${devices[i].id}')">${devices[i].label}</li>`        
+        } 
+      }
+      cams += "</ol>"
+      document.getElementById("cameras").innerHTML = cams;
+    }).catch(err => {
+      console.log(err);
+      document.getElementById("cameras").innerHTML = "No camera found";    
+    });
+  } else { // we selected a camera
+    
+    const scanner = new Html5Qrcode("reader");
+    scanner.start(
+      camid,       
+      {
+        fps: 10,    // Optional, frame per seconds for qr code scanning
+        qrbox: { width: 250, height: 250 }  // Optional, if you want bounded box UI
+      },
+      (decodedText, decodedResult) => {
+        console.log(decodedText);
+        if (decodedText.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
+          let uuid = decodedText.split("/").pop();
+          scanner.clear();
+          navigateTo('/item/new/'+uuid);
+        } else {
+            console.log("Found a QR code without qrid info format");
+          // could be fun to reuse UUIDs from other QRs
+            window.html5QrcodeScanner.clear();
+            navigateTo('/badscan?'+decodedText);
+        }   
+      },
+      (errorMessage) => {
+        // parse error, ignore it.
+      })
+    .catch((err) => {
+      // Start failed, handle it.
+    });
+    
+  }
+  
 
   
 
-  //window.html5QrcodeScanner = new Html5QrcodeScanner(
-  //  "reader", { fps: 20, qrbox: 450 });
-  //window.html5QrcodeScanner.render(scannedQR);
-
 
 
 }
 
 
-window.scannedQR = (decodedText, decodedResult) => {  
-  console.log(decodedText);
-  if (decodedText.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
-    let uuid = decodedText.split("/").pop();
-    window.html5QrcodeScanner.clear();
-    navigateTo('/item/new/'+uuid);
-  } else {
-    console.log("Found a QR code without qrid info format");
-  // could be fun to reuse UUIDs from other QRs
-    window.html5QrcodeScanner.clear();
-    navigateTo('/badscan?'+decodedText);
-  }   
-}
 
 window.clickedRow = (id) => {
   navigateTo('/item/'+id);
