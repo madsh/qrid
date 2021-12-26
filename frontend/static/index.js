@@ -207,9 +207,10 @@ window.clickedStart = (camid) => {
         qrbox: { width: 250, height: 250 }  // Optional, if you want bounded box UI
       },
       (decodedText, decodedResult) => {
-        console.log(decodedText);
+        console.log("Got one" + decodedText);
         if (decodedText.match("qrid\.info\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")) {
           let uuid = decodedText.split("/").pop();
+          scanner.stop();
           scanner.clear();
           navigateTo('/item/new/'+uuid);
         } else {
