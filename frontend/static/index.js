@@ -221,7 +221,8 @@ window.clickedStart = (camid) => {
         }   
       },
       (errorMessage) => {
-        console.error(errorMessage);
+        // ignoring loads of [Error] QR code parse error, error = y: No MultiFormat Readers were able to detect the code.
+        //console.error(errorMessage);
       })
     .catch((err) => {
       // Start failed, handle it.
