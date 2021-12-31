@@ -240,3 +240,14 @@ window.clickedRow = (id) => {
 }
 
 // Gonna try another QR scanner....
+
+
+// Apple ID
+//Listen for authorization success
+document.addEventListener('AppleIDSignInOnSuccess', (data) => {
+  //handle successful response
+});
+//Listen for authorization failures
+document.addEventListener('AppleIDSignInOnFailure', (error) => {
+  //handle error.
+});
