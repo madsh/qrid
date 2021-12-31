@@ -1,5 +1,5 @@
 import Home from './Home.js';
-import List from './ItemList.js';
+import Auth from './Auth.js';
 import ItemEdit from './ItemEdit.js';
 import ItemList from './ItemList.js';
 import ItemNew from './ItemNew.js';
@@ -25,6 +25,7 @@ const router = async () => {
   const routes = [
     { path: '/', userView: ItemList, noUserView: Home },
     { path: '/list', userView: ItemList, noUserView: Home },    
+    { path: '/auth', userView: Auth, noUserView: Auth },    
     { path: '/item/new/:id', userView: ItemNew, noUserView: Home },    
     { path: '/item/new', userView: ItemNew, noUserView: Home },
     { path: '/item/more', userView: ItemMore, noUserView: Home },
