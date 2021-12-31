@@ -68,3 +68,10 @@ h1, thead, p {
 svg {
     pointer-events: none;
 }
+
+
+
+.signin-button {
+    width: 100%;
+    height: 40px;
+}
