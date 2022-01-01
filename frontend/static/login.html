@@ -23,12 +23,12 @@
 
             document.addEventListener('AppleIDSignInOnSuccess', (data) => {
                 //handle successful response
-                document.getElementById('reponse').innerText = data;
+                document.getElementById('reponse').innerText = data.toString();
             });
 
             document.addEventListener('AppleIDSignInOnFailure', (error) => {
                 //handle error.
-                document.getElementById('reponse').innerText = error;
+                document.getElementById('reponse').innerText = error.toString();
             });
 
         </script>
